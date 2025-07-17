@@ -16,7 +16,7 @@ Additionally:
 - It does not save past searches in "Settings"
 
 Hardcore/Dumbest version:
-- lacks Bluetooth and WiFi drivers for full dumbphone experience and reduced tracking
+- lacks Bluetooth and WiFi drivers for full dumbphone experience
 
 What will NOT work:
 - Banking apps, Venmo, etc. (as with base LineageOS, or any phone w/ an unlocked bootloader)
