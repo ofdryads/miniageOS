@@ -1,5 +1,5 @@
 # MineageOS
-A stripped-down "dumbphone" mod of LineageOS (mini-LineageOS)
+A stripped-down "dumbphone" version of LineageOS (mini-LineageOS)
 
 It does not have:
 - A browser
