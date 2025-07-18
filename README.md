@@ -1,4 +1,4 @@
-# MineageOS
+# MiniageOS
 A stripped-down "dumbphone" version of LineageOS (mini-LineageOS)
 
 It does not have:
