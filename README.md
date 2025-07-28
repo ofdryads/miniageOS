@@ -12,6 +12,8 @@ What will NOT work when using a phone running this build:
 - Banking apps, Venmo, 2FA apps etc. (as with base LineageOS, or any phone w/ an unlocked bootloader)
 - Opening links (URL or QR code) in a browser
 
+WARNING: this process is meant to be repeated regularly - every 3-6 months *at a minimum*. Running this script/flashing the image *is* the update mechanism. It replaces the OTA system to avoid the modifications being undone. Going 6+ months without updating (manually or OTA) creates security risks. This goes for any 3rd party apps you add as well.
+
 I would like to develop for it:
 - A mechanism to store passkeys locally that can be used to log into accounts on desktop by scanning a QR code (use FIDO2) without opening a browser
 
