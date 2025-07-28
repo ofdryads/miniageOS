@@ -4,7 +4,7 @@ Create a stripped-down "dumbphone" version of LineageOS (mini-LineageOS)
 
 - Builds a system image that includes neither the default browser nor the fallback browser
 - Compiles with any additions to the hosts file that you want
-- It also builds without the user-facing "Updater", so that OTA updates will not overwrite the changes made
+- It also builds without the user-facing "Updater", so that you will not overwrite the changes made with OTA updates
 
 - After LineageOS is built and flashed to the phone, the script will install the Aurora Store, wait for you to update/install any apps you need (like secure messaging, notes, and maps), after which Aurora store will uninstall itself
 
