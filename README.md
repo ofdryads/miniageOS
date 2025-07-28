@@ -1,27 +1,23 @@
-# MineageOS
-A stripped-down "dumbphone" version of LineageOS (mini-LineageOS)
+# MiniageOS
+Create a stripped-down "dumbphone" version of LineageOS (mini-LineageOS)
+(For Linux and macOS)
 
-It does not have:
-- A browser
-- A browser engine (WebView)
-- Any form of app store
+- Builds a system image that includes neither the default browser nor the fallback browser
+- Compiles with any additions to the hosts file that you want
+- It also builds without the user-facing "Updater", so that OTA updates will not overwrite the changes made
 
-It has bundled with it:
-- Signal (encrypted messaging as alternative to SMS)
-- Magic Earth (navigation)
-...along with the other apps LineageOS ships with
+- After LineageOS is built and flashed to the phone, the script will install the Aurora Store, wait for you to update/install any apps you need (like secure messaging, notes, and maps), after which Aurora store will uninstall itself
 
-Additionally:
-- "Reading Mode" (B/W color filter) persists on reboot
-- It does not save past searches in "Settings"
-
-Hardcore/Dumbest version:
-- lacks Bluetooth and WiFi drivers for full dumbphone experience
-
-What will NOT work:
-- Banking apps, Venmo, etc. (as with base LineageOS, or any phone w/ an unlocked bootloader)
+What will NOT work when using a phone running this build:
+- Banking apps, Venmo, 2FA apps etc. (as with base LineageOS, or any phone w/ an unlocked bootloader)
 - Opening links (URL or QR code) in a browser
 
 I would like to develop for it:
-- A standalone e-reader app that renders .epubs without a browser engine
-- A mechanism to store passkeys locally that can be used to log into accounts on desktop by scanning a QR code (use FIDO2)
+- A mechanism to store passkeys locally that can be used to log into accounts on desktop by scanning a QR code (use FIDO2) without opening a browser
+
+Maybe also: 
+- Have different versions that set settings for different personal preferences
+- Separate music adding script
+- Grayscale
+- Night light
+- Big icons, no text/labels
