@@ -1,4 +1,4 @@
-# MiniageOS
+# miniageOS
 Create a stripped-down "dumbphone" version of LineageOS (mini-LineageOS)
 (For Linux and macOS)
 
