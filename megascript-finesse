@@ -34,6 +34,7 @@ echo "Running device-specific prep before building...
 If there is an error at this phase, refer to their warnings and guides for extracting proprietary blobs. The proprietary blob extraction is a one-and-done step (like all other steps that come before this script)"
 
 # extract and re-apply updated proprietary blobs
+# DO ABOVE HERE
 
 breakfast "$codename"
 
@@ -52,6 +53,9 @@ if [ ! -f "$local_manifest" ]; then
 
   <!-- Prevent OTA updates from coming to the phone that will overwrite changes made -->
   <remove-project name="LineageOS/android_packages_apps_Updater" />
+
+  <!--Samsung and verizon gunk -->
+
 </manifest>
 EOF
 fi
@@ -68,7 +72,7 @@ else
     echo "Error: Custom hosts file not found"
 fi
 
-# Nerf the saved searches in settings by removing DB stuff - here 
+# Nerf the saved searches in settings by removing DB stuff - here
 # maybe just have the file that will replace it in the repo like hosts
 
 echo "Building the dumb LineageOS image..."
@@ -86,16 +90,36 @@ fastboot reboot recovery
 
 read -p "Go to the update option in the menu recovery menu then hit enter: "
 
-# Sideload the zip file
+# Sideload the zip file just made
 echo "'Dirty flashing' the new dumb image..."
 adb sideload "lineage-"$codename"-*.zip" #FIX pattern
 
 adb reboot
 
-echo "Downloading the latest Aurora Store APK from F-droid..."
+read -p "Is it on and unlocked now?"
+
+#Allow user to skip gray/night if theyve already done it
+
+# Gray phone
+echo "Turning your phone gray..."
+adb shell settings put secure accessibility_display_daltonizer_enabled 1
+adb shell settings put secure accessibility_display_daltonizer 0
+
+read -p "Do you also want night mode (blue light filter) on? (y/n): " yn
+if [[ "$yn" =~ ^[Yy] ]]; then
+  adb shell settings put secure night_display_activated 1
+else
+  adb shell settings put secure night_display_activated 0
+fi
+
+echo "Downloading latest Aurora Store APK from f-droid.org for TEMPORARY installation..."
 curl -s 'https://f-droid.org/en/packages/com.aurora.store/' | grep -oP 'https://f-droid.org/repo/com\.aurora\.store[^"]+\.apk' | head -1 | xargs -I {} wget -O aurora-store-latest.apk {}
 
 # Verify the PGP signature (placeholder for actual verification)
+echo "Verifying PGP signature of downloaded APK..."
+#NEEDS logic to get version
+wget -O aurora-store-latest.apk.asc https://f-droid.org/repo/com.aurora.store_<version>.apk.asc
+gpg --verify aurora-store-latest.apk.asc aurora-store-latest.apk
 
 echo "Temporarily installing the Aurora Store on your phone..."
 adb install aurora-store-latest.apk
@@ -113,5 +137,7 @@ adb uninstall com.aurora.store
 echo "Disabling some Google programs on the phone..."
 adb shell pm disable-user --user 0 com.google.android.as #Android System Intelligence
 # remove verizon and samsung packages
+adb shell pm disable-user --user 0 com.verizon.services
+adb shell pm disable-user --user 0 com.samsung.slsi.telephony.oem.oemrilhookservice
 
 echo "Phone is dumber now!"
