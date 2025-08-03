@@ -1,18 +1,36 @@
 #!/bin/bash
 
-read -p "Checklist before running this script:
-1. You should already have LineageOS installed on your phone. If you do not yet, you can use their official version and do a clean flash (*that process WILL wipe all data from your phone! However, running this script itself will not). 
-    Installing the official version is fairly quick and simple if you follow their guide.
-2. You should have gotten up to the 'Preparing the build environment' section of the LineageOS Wiki build guide, including having installed all dependencies in their guide and having run 'repo init', then 'repo sync' at least once
-    *Note: Step 2 only ever needs to be done ONCE on the same computer. If you have EVER done those steps, you do not need to do them again. 
-3. You should have adb/fastboot installed on your computer
-4. You should have added any and all websites you want permanently blocked to the hosts file you downloaded along with this script. If you do not want any websites blocked, ignore this step.
-If you have done all these and want to continue, hit Enter:
-"
+echo "Checklist before running this script:"
+echo "1. You should already have LineageOS installed on your phone. If you do not, you can use their official version and do a clean flash (*that process WILL wipe all data from your phone! Running this script will not)"
+echo "   Installing the official version is fairly quick and simple if you follow their guide."
+echo "2. You should have gotten up to the 'Preparing the build environment' section of the LineageOS Wiki build guide, including having installed all dependencies and run 'repo init', then 'repo sync' at least once"
+echo "   *Step 2 only needs to be done ONCE. If you've EVER done those steps before on this computer, you don't need to do them again."
+echo "3. You should have adb/fastboot installed on your computer"
+echo "4. You should have added any websites you want permanently blocked on your phone to the hosts file you downloaded with this script. If you do not want any blocked, ignore this step."
+echo "5. As mentioned on the LOS wiki, your "lineage" folder should be located on a drive with at least 300 GB of free storage"
+echo "6. You should have enabled USB debugging in Developer Settings and authorized it for the computer you are working on"
+echo ""
+echo "Additional note: please make sure your computer will stay on and not sleep or shut down while this is running!"
+echo "The first time it builds, it may take many hours, and you can leave it running overnight. Subsequent runs should only take 30-90 mins, depending on your hardware, network, etc."
+echo ""
+echo "If you have done all these things and want to continue, press 'y'"
+echo "Otherwise, you can press 'n', go do them, and come back later to run the script"
+read -p "Continue? (y/n): " yn
+case $yn in
+    [Yy]* ) ;;
+    * ) exit 1;;
+esac
 
 read -p "Enter the full path to the LineageOS root directory on your computer (it's probably called 'lineage'): " lineage_root
-
 read -p "Enter your device's codename in all lowercase (you can find this name at https://wiki.lineageos.org/devices/ ): " codename
+
+#TODO move all the y/n options up here so user does not have to come back and give input many times
+echo "Do you want to disable saved searches in Settings? y/n"
+echo "Do you want your phone in grayscale (B/W)? y/n"
+echo "Do you want to enable Night Mode (blue light filter)? y/n"
+
+# directory where the dumbphone scripts and files live
+script_in_here="$(dirname "$0")"
 
 if ! command -v adb &> /dev/null; then
     echo "Error: adb not installed or not found"
@@ -20,22 +38,55 @@ if ! command -v adb &> /dev/null; then
 fi
 
 if [ ! -d "$lineage_root/.repo" ] || [ ! -d "$lineage_root/packages" ]; then
-    echo "Error: directory contents not found - maybe you entered the wrong path to the LineageOS directory, or you have not run the original 'repo sync' for base LineageOS yet"
+    echo "Error: directory contents not found - maybe you entered the wrong path to the LineageOS directory, or you have not run the original 'repo init' and 'repo sync' for base LineageOS yet"
     exit 1
 fi
 
-cd "$lineage_root" || exit 1
-
+cd "$lineage_root"
 # set up the build environment
 source build/envsetup.sh
-croot
+croot || { echo "Exiting..."; exit 1; }
 
-echo "Running device-specific prep before building... 
-If there is an error at this phase, refer to their warnings and guides for extracting proprietary blobs. The proprietary blob extraction is a one-and-done step (like all other steps that come before this script)"
+echo "Re-syncing repository to get any updates..."
+repo sync --force-sync --detach
 
-# extract and re-apply updated proprietary blobs
-# DO ABOVE HERE
+echo "Running device-specific prep before building..."
+# even for devices where this will fail without proprietary blobs, it needs to run in order to populate lineage/device w/ the manufacturer and device
+breakfast "$codename"
+cd device || { echo "No device directory found - try the 'breakfast' command with your device's codename again"; exit 1; }
 
+# Prompt the user to select an item from the current directory
+echo "Enter the number next to your device's manufacturer (should be something like 'google', 'samsung', etc.):"
+
+select manuf in *; do
+  if [[ -n "$manuf" ]]; then
+    echo "Selected: $manuf"
+    break
+  else
+    echo "Invalid selection. Try again."
+  fi
+done
+
+#afaik this will always exit if the 'device' subdirectory selected is not the manufacturer - none of the others will contain a folder called *codename* 
+cd "$manuf"/"$codename" || { echo "Can't find directory for this manufacturer and device"; exit 1; }
+
+
+# take the proprietary things to be included and remove problematic/unwanted ones 
+# DO NOT DO THIS CARELESSLY
+if (device name = lynx) {
+    cp "$lineage_root"/device/google/lynx/lynx/proprietary_files.txt
+}
+
+# extract proprietary blobs, or overwrite previous blobs with updated ones
+echo "Extracting the latest proprietary blobs for your device from the official LOS build..."
+
+# TODO pull the latest LOS nightly signed zip
+#PLAACEHOLDER
+latest_off_zip="/home/aph/Downloads/lineage-22.2-20250801-nightly-lynx-signed.zip"
+./extract-files.py "$latest_off_zip"
+
+# for if it didnt work the first time bc it needed the proprietary blobs first
+# no harm in running twice
 breakfast "$codename"
 
 # Check for dumbphone manifest file, create if it doesn't exist
@@ -53,37 +104,42 @@ if [ ! -f "$local_manifest" ]; then
 
   <!-- Prevent OTA updates from coming to the phone that will overwrite changes made -->
   <remove-project name="LineageOS/android_packages_apps_Updater" />
-
-  <!--Samsung and verizon gunk -->
-
 </manifest>
 EOF
 fi
 
-echo "Syncing repo to apply the dumbphone manifest changes to the source code..."
-repo sync --force-sync --no-clone-bundle # use these flags to get all updates
+echo "Re-syncing repo to apply the dumbphone manifest changes to the source code..."
+repo sync
 
-script_in_here="$(dirname "$0")"
 hosts_modded="$script_in_here/hosts"
 if [ -f "$hosts_modded" ]; then
     cp "$hosts_modded" "$lineage_root/system/core/rootdir/etc/hosts"
-    echo "Replaced LineageOS hosts file with your modified version"
+    echo "Replaced LineageOS hosts file with your modified version. If you didn't modify it, this will have no effect."
 else
-    echo "Error: Custom hosts file not found"
+    echo "Error: Custom hosts file not found - is it in the same folder as this script?"
 fi
 
-# Nerf the saved searches in settings by removing DB stuff - here
+# Nerf the saved searches in settings by removing DB accessing stuff - here
 # maybe just have the file that will replace it in the repo like hosts
+# have it fail gracefully and continue building if the file structure changes somehow
 
 echo "Building the dumb LineageOS image..."
 source build/envsetup.sh
 croot
 brunch "$codename"
 
-# Change to the out directory
-cd "$lineage_root"/out/target/product/"$codename" || exit 1
+# Change to the build output directory
+cd $OUT || cd "$lineage_root"/out/ || echo "ask for path as input"
 
-echo "Make sure your phone is plugged into the computer and that adb can detect your phone."
+# ALL BELOW HERE should be moved to a second script that is invoked here
+
+echo "Make sure your phone is plugged into the computer, and that USB debugging on this computer has been enabled and authorized (in developer settings)"
+
+device_list=$(adb devices)
+echo "$device_list"
+
+echo "If you see your device listed, that is good and you can continue"
+echo "If you do not see any device listed, do NOT press Enter yet. Leave this terminal window open, troubleshoot, then come back and when running 'adb devices' in another terminal window shows your device and says 'device', not 'unauthorized'."
 read -p "Press Enter to continue to recovery and flash the new system image..."
 
 fastboot reboot recovery
@@ -92,11 +148,13 @@ read -p "Go to the update option in the menu recovery menu then hit enter: "
 
 # Sideload the zip file just made
 echo "'Dirty flashing' the new dumb image..."
-adb sideload "lineage-"$codename"-*.zip" #FIX pattern
+if ("lineage-"$codename"-{today's date like }-UNOFFICIAL.zip" in pwd)
+adb sideload "lineage-"$codename"-{today's date like }-UNOFFICIAL.zip" #FIX pattern
+else error, ask for the path
 
 adb reboot
 
-read -p "Is it on and unlocked now?"
+read -p "Is the phone on and unlocked now?"
 
 #Allow user to skip gray/night if theyve already done it
 
@@ -108,36 +166,31 @@ adb shell settings put secure accessibility_display_daltonizer 0
 read -p "Do you also want night mode (blue light filter) on? (y/n): " yn
 if [[ "$yn" =~ ^[Yy] ]]; then
   adb shell settings put secure night_display_activated 1
-else
-  adb shell settings put secure night_display_activated 0
 fi
 
 echo "Downloading latest Aurora Store APK from f-droid.org for TEMPORARY installation..."
 curl -s 'https://f-droid.org/en/packages/com.aurora.store/' | grep -oP 'https://f-droid.org/repo/com\.aurora\.store[^"]+\.apk' | head -1 | xargs -I {} wget -O aurora-store-latest.apk {}
 
-# Verify the PGP signature (placeholder for actual verification)
-echo "Verifying PGP signature of downloaded APK..."
-#NEEDS logic to get version
-wget -O aurora-store-latest.apk.asc https://f-droid.org/repo/com.aurora.store_<version>.apk.asc
-gpg --verify aurora-store-latest.apk.asc aurora-store-latest.apk
+#TODO verify PGP signature
 
+#ONLY RUN if it passes PGP test - but delete the file either way
 echo "Temporarily installing the Aurora Store on your phone..."
 adb install aurora-store-latest.apk
 
-echo "Update any third party apps you have installed or add any apps you need (e.g. maps, secure messaging, notes, minimalist launcher)"
+echo "Update any third party apps you have installed or add any apps you need (e.g. maps, secure messaging, notes)"
 echo "Warning: Some apps like Venmo, bank apps, and many (but not all) 2FA apps will not work with an unlocked bootloader."
 read -p "Press Enter when you are done installing/updating what you need: "
 
 # Clean up
 echo "Deleting the Aurora Store .apk from your computer..."
 rm -f aurora-store-latest.apk
+
+echo "Uninstalling the Aurora Store app from your phone..."
 adb shell am force-stop com.aurora.store
+#perhaps a wait buffer/retry here?
 adb uninstall com.aurora.store
 
-echo "Disabling some Google programs on the phone..."
+echo "Disabling some unnecessary Google programs on the phone..."
 adb shell pm disable-user --user 0 com.google.android.as #Android System Intelligence
-# remove verizon and samsung packages
-adb shell pm disable-user --user 0 com.verizon.services
-adb shell pm disable-user --user 0 com.samsung.slsi.telephony.oem.oemrilhookservice
 
 echo "Phone is dumber now!"
