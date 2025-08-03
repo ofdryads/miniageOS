@@ -1,0 +1,5 @@
+ignore/*
+
+config.sh
+
+build.log
