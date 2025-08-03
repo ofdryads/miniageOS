@@ -1,0 +1,117 @@
+#!/bin/bash
+
+read -p "Checklist before running this script:
+1. You should already have LineageOS installed on your phone. If you do not yet, you can use their official version and do a clean flash (*that process WILL wipe all data from your phone! However, running this script itself will not). 
+    Installing the official version is fairly quick and simple if you follow their guide.
+2. You should have gotten up to the 'Preparing the build environment' section of the LineageOS Wiki build guide, including having installed all dependencies in their guide and having run 'repo init', then 'repo sync' at least once
+    *Note: Step 2 only ever needs to be done ONCE on the same computer. If you have EVER done those steps, you do not need to do them again. 
+3. You should have adb/fastboot installed on your computer
+4. You should have added any and all websites you want permanently blocked to the hosts file you downloaded along with this script. If you do not want any websites blocked, ignore this step.
+If you have done all these and want to continue, hit Enter:
+"
+
+read -p "Enter the full path to the LineageOS root directory on your computer (it's probably called 'lineage'): " lineage_root
+
+read -p "Enter your device's codename in all lowercase (you can find this name at https://wiki.lineageos.org/devices/ ): " codename
+
+if ! command -v adb &> /dev/null; then
+    echo "Error: adb not installed or not found"
+    exit 1
+fi
+
+if [ ! -d "$lineage_root/.repo" ] || [ ! -d "$lineage_root/packages" ]; then
+    echo "Error: directory contents not found - maybe you entered the wrong path to the LineageOS directory, or you have not run the original 'repo sync' for base LineageOS yet"
+    exit 1
+fi
+
+cd "$lineage_root" || exit 1
+
+# set up the build environment
+source build/envsetup.sh
+croot
+
+echo "Running device-specific prep before building... 
+If there is an error at this phase, refer to their warnings and guides for extracting proprietary blobs. The proprietary blob extraction is a one-and-done step (like all other steps that come before this script)"
+
+# extract and re-apply updated proprietary blobs
+
+breakfast "$codename"
+
+# Check for dumbphone manifest file, create if it doesn't exist
+local_manifest="$lineage_root/.repo/local_manifests/dumbphone.xml"
+if [ ! -f "$local_manifest" ]; then
+    mkdir -p "$lineage_root/.repo/local_manifests"
+    cat > "$local_manifest" <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+  <!-- Remove default browser -->
+  <remove-project name="LineageOS/android_packages_apps_Jelly" />
+
+  <!-- Remove fallback browser -->
+  <remove-project name="platform/packages/apps/Browser2" />
+
+  <!-- Prevent OTA updates from coming to the phone that will overwrite changes made -->
+  <remove-project name="LineageOS/android_packages_apps_Updater" />
+</manifest>
+EOF
+fi
+
+echo "Syncing repo to apply the dumbphone manifest changes to the source code..."
+repo sync --force-sync --no-clone-bundle # use these flags to get all updates
+
+script_in_here="$(dirname "$0")"
+hosts_modded="$script_in_here/hosts"
+if [ -f "$hosts_modded" ]; then
+    cp "$hosts_modded" "$lineage_root/system/core/rootdir/etc/hosts"
+    echo "Replaced LineageOS hosts file with your modified version"
+else
+    echo "Error: Custom hosts file not found"
+fi
+
+# Nerf the saved searches in settings by removing DB stuff - here 
+# maybe just have the file that will replace it in the repo like hosts
+
+echo "Building the dumb LineageOS image..."
+source build/envsetup.sh
+croot
+brunch "$codename"
+
+# Change to the out directory
+cd "$lineage_root"/out/target/product/"$codename" || exit 1
+
+echo "Make sure your phone is plugged into the computer and that adb can detect your phone."
+read -p "Press Enter to continue to recovery and flash the new system image..."
+
+fastboot reboot recovery
+
+read -p "Go to the update option in the menu recovery menu then hit enter: "
+
+# Sideload the zip file
+echo "'Dirty flashing' the new dumb image..."
+adb sideload "lineage-"$codename"-*.zip" #FIX pattern
+
+adb reboot
+
+echo "Downloading the latest Aurora Store APK from F-droid..."
+curl -s 'https://f-droid.org/en/packages/com.aurora.store/' | grep -oP 'https://f-droid.org/repo/com\.aurora\.store[^"]+\.apk' | head -1 | xargs -I {} wget -O aurora-store-latest.apk {}
+
+# Verify the PGP signature (placeholder for actual verification)
+
+echo "Temporarily installing the Aurora Store on your phone..."
+adb install aurora-store-latest.apk
+
+echo "Update any third party apps you have installed or add any apps you need (e.g. maps, secure messaging, notes, minimalist launcher)"
+echo "Warning: Some apps like Venmo, bank apps, and many (but not all) 2FA apps will not work with an unlocked bootloader."
+read -p "Press Enter when you are done installing/updating what you need: "
+
+# Clean up
+echo "Deleting the Aurora Store .apk from your computer..."
+rm -f aurora-store-latest.apk
+adb shell am force-stop com.aurora.store
+adb uninstall com.aurora.store
+
+echo "Disabling some Google programs on the phone..."
+adb shell pm disable-user --user 0 com.google.android.as #Android System Intelligence
+# remove verizon and samsung packages
+
+echo "Phone is dumber now!"
