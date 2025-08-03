@@ -28,8 +28,6 @@ import com.android.settings.intelligence.utils.AsyncLoader;
 public class SavedQueryRecorder extends AsyncLoader<Void> {
 
     private static final String LOG_TAG = "SavedQueryRecorder";
-
-    // Max number of saved search queries (who will be used for proposing suggestions)
     private static long MAX_SAVED_SEARCH_QUERY = 0;
 
     public SavedQueryRecorder(Context context) {

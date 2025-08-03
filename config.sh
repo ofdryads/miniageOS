@@ -1,5 +1,3 @@
-# ***RENAME THIS FILE TO 'config.sh' BEFORE RUNNING THE SCRIPT***
-
 # see https://wiki.lineageos.org/devices/ and click on your phone's vendor
 # it should say "codename: {xyz}" below your phone model - that is the value for CODENAME
 CODENAME=""
@@ -13,10 +11,13 @@ GRAYSCALE=true   # put true or false
 NIGHT_MODE=true  # put true or false
 
 #Disable saved searches and suggestions of past searches in Settings
-DISABLE_SETTINGS_SEARCHES=false # put true to disable, or false to save past searches
+DISABLE_SETTINGS_SEARCHES=false # put true to disable, or false to save past searches (LOS normal behavior)
 
 # Option to tweak which things will be included in the proprietary blob extraction
 TWEAK_PROPRIETARY=false
+
+# path to custom hosts file - you don't need to change this unless you move it
+HOSTS="./hosts"
 
 # Are you me?
 ARE_YOU_ME=false

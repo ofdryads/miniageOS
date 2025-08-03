@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Change to the build output directory
-cd "$lineage_root"/out/
+cd "$lineage_root"/out/.....finish this path
 
 echo "Make sure your phone is plugged into the computer, and that USB debugging on this computer has been enabled and authorized (in developer settings)"
 
