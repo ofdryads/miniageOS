@@ -7,8 +7,8 @@ echo "2. You should have gotten up to the 'Preparing the build environment' sect
 echo "   *Step 2 only needs to be done ONCE. If you've EVER done those steps before on this computer, you don't need to do them again."
 echo "3. You should have adb/fastboot installed on your computer"
 echo "4. You should have added any websites you want permanently blocked on your phone to the hosts file you downloaded with this script. If you do not want any blocked, ignore this step."
-echo "5. As mentioned on the LOS wiki, your "lineage" folder should be located on a drive with at least 300 GB of free storage"
-echo "6. You should have enabled USB debugging in Developer Settings and authorized it for the computer you are working on"
+echo "5. You should have enabled USB debugging in Developer Settings and authorized it for the computer you are working on"
+echo "6. Add the appropriate variables in config.sh, keeping it in the same folder as this script"
 echo ""
 echo "Additional note: please make sure your computer will stay on and not sleep or shut down while this is running!"
 echo "The first time it builds, it may take many hours, and you can leave it running overnight. Subsequent runs should only take 30-90 mins, depending on your hardware, network, etc."
@@ -21,9 +21,13 @@ case $yn in
     * ) exit 1;;
 esac
 
-exec > >(tee -a build.log) 2>&1 #logging
+exec > >(tee -a build.log) 2>&1 # log to this file
 
-source ./config.sh
+source ./config.sh # load variables that will be used
+
+if [[ "${ARE_YOU_ME,,}" == "true" ]]; then
+  source ./ignore/config.sh
+fi
 
 # directory where the dumbphone scripts and files live
 script_in_here="$(dirname "$0")"
@@ -64,8 +68,8 @@ if [[ "$CODENAME" == "lynx" ]]; then
 echo "Extracting the latest proprietary blobs for your device from the official LOS build..."
 
 # remove past blobs for clean slate
-check for the folder and contents
-rm -rf $LINEAGE_ROOT/
+check for the folder and contents first then:
+rm -rf "$LINEAGE_ROOT/vendor/$MANUFACTURER"
 
 # TODO pull the latest LOS nightly signed zip
 #PLACEHOLDER
@@ -104,7 +108,8 @@ if [ARE_YOU_ME]
 hosts_modded="$script_in_here/hosts"
 if [ -f "$hosts_modded" ]; then
     cp "$hosts_modded" "$LINEAGE_ROOT/system/core/rootdir/etc/hosts"
-    echo "Replaced LineageOS hosts file with your modified version. If you didn't modify it, this will have no effect."
+    echo "Replaced LineageOS hosts file with your modified version."
+    echo "If you didn't modify it, this will have no effect."
 else
     echo "Error: Custom hosts file not found - is it in the same folder as this script and named "hosts"?"
 fi
@@ -113,9 +118,11 @@ fi
 # maybe just have the file that will replace it in the repo like hosts
 # have it fail gracefully and continue building if the file structure changes somehow
 if the file is there and config set to true:
-  cp "$script_in_here/
+  cp "$script_in_here/NoSavedSettingsSearches.java" "$lineage_root/packages/apps/SettingsIntelligence/src/com/android/settings/intelligence/search/savedqueries/SavedQueryRecorder.java"
 
 echo "Building the dumb LineageOS image..."
 source build/envsetup.sh
 croot
 brunch "$CODENAME"
+
+. ./flash-customize.sh # invoke the other script to finish
