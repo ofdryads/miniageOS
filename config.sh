@@ -4,13 +4,13 @@ CODENAME=""
 LINEAGE_ROOT="" # the path to the directory where you ran 'repo init' and 'repo sync'
 
 # for MANUFACTURER, usually it's just the manufacturer name in lowercase with no spaces
-# Known names: google, samsung, motorola, nokia, asus, oneplus, fairphone, lenovo
+# Some known manufacturer names: google, samsung, motorola, oneplus, fairphone, nokia
 MANUFACTURER=""
 
 GRAYSCALE=true   # put true or false
 NIGHT_MODE=true  # put true or false
 
-#Disable saved searches and suggestions of past searches in Settings
+#Disable saved searches and suggestions of your past searches in Settings
 DISABLE_SETTINGS_SEARCHES=false # put true to disable, or false to save past searches (LOS normal behavior)
 
 # Option to tweak which things will be included in the proprietary blob extraction

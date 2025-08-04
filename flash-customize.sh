@@ -58,6 +58,15 @@ adb shell am force-stop com.aurora.store
 #perhaps a wait buffer/retry here?
 adb uninstall com.aurora.store
 
+# disable built-in lineageOS camera
+adb shell pm disable-user --user 0 org.lineageos.aperture
+
+# install minimum needed services to use google/pixel camera app
+adb install app-basic-release.apk #gcam services provider
+
+# install pixel camera - replace with config variable
+adb install "/home/aph/Downloads/com.google.android.GoogleCamera_9.8.102.738511538.14-68281438_minAPI35(arm64-v8a)(nodpi)_apkmirror.com.apk"
+
 echo "Disabling some unnecessary Google programs on the phone..."
 adb shell pm disable-user --user 0 com.google.android.as #Android System Intelligence
 

@@ -102,12 +102,8 @@ fi
 echo "Re-syncing repo to apply the dumbphone manifest changes to the source code..."
 repo sync
 
-if [ARE_YOU_ME]
-  cp "$script_in_here/ignore/hosts_mine" "$LINEAGE_ROOT/system/core/rootdir/etc/hosts"
-
-hosts_modded="$script_in_here/hosts"
-if [ -f "$hosts_modded" ]; then
-    cp "$hosts_modded" "$LINEAGE_ROOT/system/core/rootdir/etc/hosts"
+if [ -f "$HOSTS" ]; then
+    cp "$HOSTS" "$LINEAGE_ROOT/system/core/rootdir/etc/hosts"
     echo "Replaced LineageOS hosts file with your modified version."
     echo "If you didn't modify it, this will have no effect."
 else
@@ -115,7 +111,6 @@ else
 fi
 
 # Nerf the saved searches in settings by removing DB accessing stuff - here
-# maybe just have the file that will replace it in the repo like hosts
 # have it fail gracefully and continue building if the file structure changes somehow
 if the file is there and config set to true:
   cp "$script_in_here/NoSavedSettingsSearches.java" "$lineage_root/packages/apps/SettingsIntelligence/src/com/android/settings/intelligence/search/savedqueries/SavedQueryRecorder.java"
