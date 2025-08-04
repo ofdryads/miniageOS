@@ -13,12 +13,18 @@ NIGHT_MODE=true  # put true or false
 #Disable saved searches and suggestions of your past searches in Settings
 DISABLE_SETTINGS_SEARCHES=false # put true to disable, or false to save past searches (LOS normal behavior)
 
-# Option to tweak which things will be included in the proprietary blob extraction
-TWEAK_PROPRIETARY=false
-
-# path to custom hosts file - you don't need to change this unless you move it
+# path to custom hosts file - you don't need to change this unless you move the file or rename it
 HOSTS="./hosts"
+
+# Is the phone a Google Pixel?
+HAVE_PIXEL=false
+
+# Option to tweak which things will be included in the proprietary blob extraction
+TWEAK_BLOBS=false
+
+# If you have a Pixel, this will install the Google Pixel Camera and disable the LineageOS default camera (Aperture)
+GOOGLE_PIXEL_CAMERA=false
 
 # Are you me?
 ARE_YOU_ME=false
-# You will not have the files the script will reference if this is set to true and you are not me!
+# You will not have the files the script will reference if this is set to true and you are not me

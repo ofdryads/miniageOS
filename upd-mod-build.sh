@@ -4,14 +4,17 @@ echo "Checklist before running this script:"
 echo "1. You should already have LineageOS installed on your phone. If you do not, you can use their official version and do a clean flash (*that process WILL wipe all data from your phone! Running this script will not)"
 echo "   Installing the official version is fairly quick and simple if you follow their guide."
 echo "2. You should have gotten up to the 'Preparing the build environment' section of the LineageOS Wiki build guide, including having installed all dependencies and run 'repo init', then 'repo sync' at least once"
-echo "   *Step 2 only needs to be done ONCE. If you've EVER done those steps before on this computer, you don't need to do them again."
+echo "   *Step 2 only needs to be done ONCE. If you've EVER done those steps before, you don't need to do them again."
 echo "3. You should have adb/fastboot installed on your computer"
 echo "4. You should have added any websites you want permanently blocked on your phone to the hosts file you downloaded with this script. If you do not want any blocked, ignore this step."
 echo "5. You should have enabled USB debugging in Developer Settings and authorized it for the computer you are working on"
 echo "6. Add the appropriate variables in config.sh, keeping it in the same folder as this script"
 echo ""
 echo "Additional note: please make sure your computer will stay on and not sleep or shut down while this is running!"
-echo "The first time it builds, it may take many hours, and you can leave it running overnight. Subsequent runs should only take 30-90 mins, depending on your hardware, network, etc."
+echo "The first time it builds, it may take many hours, and you can leave it running overnight. Subsequent runs should only take 30-90 mins, depending on your hardware (for build), network (for sync), etc."
+echo ""
+echo "Another note: This script, specifically 'repo sync --force-sync --detach', will destroy any changes you have made on your computer to the LineageOS code that are not re-injected by this script."
+echo "If you do not want that, you can modify the script or not run it."
 echo ""
 echo "If you have done all these things and want to continue, press 'y'"
 echo "Otherwise, you can press 'n', go do them, and come back later to run the script"
@@ -56,13 +59,12 @@ breakfast "$CODENAME"
 cd device || { echo "No device directory found - try the 'breakfast' command with your device's CODENAME again"; exit 1; }
 
 #afaik this will always exit if the 'device' subdirectory selected is not the manufacturer - none of the others will contain a folder called *CODENAME* 
-cd "$manuf"/"$CODENAME" || { echo "Can't find directory for this manufacturer and device"; exit 1; }
+cd "$MANUFACTURER"/"$CODENAME" || { echo "Can't find directory for this manufacturer and device"; exit 1; }
 
 # take the proprietary things to be included and remove problematic/unwanted ones 
 # DO NOT DO THIS CARELESSLY
 if [[ "$CODENAME" == "lynx" ]]; then
-    cp "$LINEAGE_ROOT"/device/google/lynx/lynx/proprietary_files.txt
-}
+    cp "$LINEAGE_ROOT"/device/google/lynx/lynx/proprietary_files.txt $script_in_here
 
 # extract proprietary blobs, or overwrite previous blobs with updated ones
 echo "Extracting the latest proprietary blobs for your device from the official LOS build..."
@@ -120,4 +122,4 @@ source build/envsetup.sh
 croot
 brunch "$CODENAME"
 
-. ./flash-customize.sh # invoke the other script to finish
+. ./flash-customize.sh # invoke the other script to finish the dumbphone
