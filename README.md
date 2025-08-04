@@ -3,10 +3,6 @@
 
 Create a stripped-down "dumbphone" version of LineageOS for your Android phone, without giving up the camera quality and touchscreen of a smartphone
 
-For: Linux
-Possibly could work on: macOS or WSL
-Will not work on: Windows
-
 ## What is it?
 
 Scripts and resources used by those scripts to do what it does (see "What it does")
