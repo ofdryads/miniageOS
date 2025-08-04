@@ -15,8 +15,11 @@
  */
 
 /*
-    Modified version of the original file that will prevent things you search in settings from being saved and suggested to you
-    Path to original file: $lineage_root/packages/apps/SettingsIntelligence/src/com/android/settings/intelligence/search/savedqueries/SavedQueryRecorder.java
+    *Aug 2025*
+    Modified version of the original file, will prevent things you search in settings from being saved and then suggested to you later
+    - The original version of this file hasn't been changed in eight years, and its parent folder hasn't been changed in four
+    - I will take the liberty of assuming there will not be significant changes to this mechanism any time soon, and revisit this approach if wrong
+    - Path to the original file: $lineage_root/packages/apps/SettingsIntelligence/src/com/android/settings/intelligence/search/savedqueries/SavedQueryRecorder.java
 */
 
 package com.android.settings.intelligence.search.savedqueries;

@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# if not already in this directory
 # Change to the build output directory
 cd "$lineage_root"/out/.....finish this path
 
@@ -24,15 +25,18 @@ else error, ask for the path
 
 adb reboot
 
-read -p "Is the phone on and unlocked now?"
+read -p "Is the phone on and unlocked now? Hit Enter when it is"
 
 # Gray phone
-echo "Turning your phone gray..."
-adb shell settings put secure accessibility_display_daltonizer_enabled 1
-adb shell settings put secure accessibility_display_daltonizer 0
+if [$GRAYSCALE]; then
+  echo "Turning your phone gray..."
+  adb shell settings put secure accessibility_display_daltonizer_enabled 1
+  adb shell settings put secure accessibility_display_daltonizer 0
+fi
 
-read -p "Do you also want night mode (blue light filter) on? (y/n): " yn
-if [[ "$yn" =~ ^[Yy] ]]; then
+
+if [$NIGHT_MODE]; then
+  echo "Turning on night mode..."
   adb shell settings put secure night_display_activated 1
 fi
 
@@ -58,16 +62,18 @@ adb shell am force-stop com.aurora.store
 #perhaps a wait buffer/retry here?
 adb uninstall com.aurora.store
 
-# disable built-in lineageOS camera
+# disable built-in lineageOS camera - leave it installed on the phone as a backup
 adb shell pm disable-user --user 0 org.lineageos.aperture
 
-# install minimum needed services to use google/pixel camera app
-adb install app-basic-release.apk #gcam services provider
-
-# install pixel camera - replace with config variable
+# install pixel camera - replace hardcoded path with config variable or pull from apkmirror
+# We want android 15+ (NOT 16+), arm64-v8a, nodpi
+# Get latest one - handle bundle vs 1 apk, also check signature
+# https://www.apkmirror.com/apk/google-inc/camera/variant-%7B%22arches_slug%22%3A%5B%22arm64-v8a%22%5D%2C%22dpis_slug%22%3A%5B%22nodpi%22%5D%2C%22minapi_slug%22%3A%22minapi-35%22%7D/
+# there is also a record/notifications of updates here: https://www.pushbullet.com/channel-popup?tag=am-677523121
 adb install "/home/aph/Downloads/com.google.android.GoogleCamera_9.8.102.738511538.14-68281438_minAPI35(arm64-v8a)(nodpi)_apkmirror.com.apk"
 
 echo "Disabling some unnecessary Google programs on the phone..."
-adb shell pm disable-user --user 0 com.google.android.as #Android System Intelligence
+adb shell pm disable-user --user 0 com.google.android.as # Android System Intelligence
+adb shell pm disable-user --user 0 com.google.android.as.oss # Private Compute Services
 
 echo "Phone is dumber now!"

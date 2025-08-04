@@ -8,7 +8,7 @@ echo "   *Step 2 only needs to be done ONCE. If you've EVER done those steps bef
 echo "3. You should have adb/fastboot installed on your computer"
 echo "4. You should have added any websites you want permanently blocked on your phone to the hosts file you downloaded with this script. If you do not want any blocked, ignore this step."
 echo "5. You should have enabled USB debugging in Developer Settings and authorized it for the computer you are working on"
-echo "6. Add the appropriate variables in config.sh, keeping it in the same folder as this script"
+echo "6. Add the appropriate values in the config.sh file, keeping it in the same folder as this script"
 echo ""
 echo "Additional note: please make sure your computer will stay on and not sleep or shut down while this is running!"
 echo "The first time it builds, it may take many hours, and you can leave it running overnight. Subsequent runs should only take 30-90 mins, depending on your hardware (for build), network (for sync), etc."
@@ -63,8 +63,11 @@ cd "$MANUFACTURER"/"$CODENAME" || { echo "Can't find directory for this manufact
 
 # take the proprietary things to be included and remove problematic/unwanted ones 
 # DO NOT DO THIS CARELESSLY
+# NEEDS FIXING / TESTING
 if [[ "$CODENAME" == "lynx" ]]; then
     cp "$LINEAGE_ROOT"/device/google/lynx/lynx/proprietary_files.txt $script_in_here
+    # TODO have user modify file, get input when done, and cp back to "$LINEAGE_ROOT"/device/google/lynx/lynx/proprietary_files.txt
+fi
 
 # extract proprietary blobs, or overwrite previous blobs with updated ones
 echo "Extracting the latest proprietary blobs for your device from the official LOS build..."
@@ -114,12 +117,14 @@ fi
 
 # Nerf the saved searches in settings by removing DB accessing stuff - here
 # have it fail gracefully and continue building if the file structure changes somehow
-if the file is there and config set to true:
+(if the original file is in that location and config set to true: )
   cp "$script_in_here/NoSavedSettingsSearches.java" "$lineage_root/packages/apps/SettingsIntelligence/src/com/android/settings/intelligence/search/savedqueries/SavedQueryRecorder.java"
 
 echo "Building the dumb LineageOS image..."
 source build/envsetup.sh
 croot
 brunch "$CODENAME"
+
+cd $OUT # go to build output folder when done
 
 . ./flash-customize.sh # invoke the other script to finish the dumbphone
