@@ -2,20 +2,22 @@
 
 # if not already in this directory
 # Change to the build output directory
-cd "$lineage_root"/out/.....finish this path
+cd "$lineage_root"/out/.....finish this path 
 
 echo "Make sure your phone is plugged into the computer, and that USB debugging on this computer has been enabled and authorized (in developer settings)"
-
+echo ""
 device_list=$(adb devices)
 echo "$device_list"
 
-echo "If you see your device listed, that is good and you can continue"
+echo "If you see your device listed above, that is good and you can continue"
+echo ""
 echo "If you do not see any device listed, do NOT press Enter yet. Leave this terminal window open, troubleshoot, then come back and when running 'adb devices' in another terminal window shows your device and says 'device', not 'unauthorized'."
+echo ""
 read -p "Press Enter to continue to recovery and flash the new system image..."
 
 fastboot reboot recovery
 
-read -p "Go to the update option in the menu recovery menu then hit enter: "
+read -p "Go to the update option in the recovery menu then hit enter: "
 
 # Sideload the zip file just made
 echo "'Dirty flashing' the new dumb image..."
@@ -33,7 +35,6 @@ if [$GRAYSCALE]; then
   adb shell settings put secure accessibility_display_daltonizer_enabled 1
   adb shell settings put secure accessibility_display_daltonizer 0
 fi
-
 
 if [$NIGHT_MODE]; then
   echo "Turning on night mode..."
@@ -62,6 +63,7 @@ adb shell am force-stop com.aurora.store
 #perhaps a wait buffer/retry here?
 adb uninstall com.aurora.store
 
+#TODO only for pixel!
 # disable built-in lineageOS camera - leave it installed on the phone as a backup
 adb shell pm disable-user --user 0 org.lineageos.aperture
 
@@ -72,6 +74,7 @@ adb shell pm disable-user --user 0 org.lineageos.aperture
 # there is also a record/notifications of updates here: https://www.pushbullet.com/channel-popup?tag=am-677523121
 adb install "/home/aph/Downloads/com.google.android.GoogleCamera_9.8.102.738511538.14-68281438_minAPI35(arm64-v8a)(nodpi)_apkmirror.com.apk"
 
+# TODO should only attempt if pixel - it wont fail otherwise, but it wont do anything either
 echo "Disabling some unnecessary Google programs on the phone..."
 adb shell pm disable-user --user 0 com.google.android.as # Android System Intelligence
 adb shell pm disable-user --user 0 com.google.android.as.oss # Private Compute Services

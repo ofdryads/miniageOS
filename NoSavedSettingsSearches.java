@@ -25,7 +25,6 @@
 package com.android.settings.intelligence.search.savedqueries;
 
 import android.content.Context;
-
 import com.android.settings.intelligence.utils.AsyncLoader;
 
 public class SavedQueryRecorder extends AsyncLoader<Void> {

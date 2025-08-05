@@ -1,11 +1,11 @@
 ```markdown
 # miniageOS (mini-LineageOS)
 
-Create a stripped-down "dumbphone" version of LineageOS for your Android phone, without giving up the camera quality and touchscreen of a smartphone
+Create a stripped-down "dumbphone" version of LineageOS for your Android phone without giving up the camera quality and touchscreen of a smartphone
 
 ## What is it?
 
-Scripts and resources used by those scripts to do what it does (see "What it does")
+Scripts, and resources used by those scripts to do what it does (see "What it does")
 
 ## What it does
 
@@ -13,7 +13,7 @@ Scripts and resources used by those scripts to do what it does (see "What it doe
 - Compiles with a custom hosts file so that your phone will "hard-block" any domains you choose
 - Preserves all existing apps, settings, and other user data on phones that already have LineageOS installed
 - Pulls the most recent LineageOS updates and device-specific vendor updates from their official sources before building so the phone stays up to date
-- Allows you to extract only the "proprietary blobs" you need for your device
+- Allows you to extract only the "proprietary blobs" you want AND need for your device
 - Does not include any app store or Google Play Services in the system image
 - For Pixels, replaces the default LineageOS camera app with the higher-quality Google camera app, without needing GApps, Google Play Services, or microG
 - Optionally sets the phone to grayscale and night mode (blue light filter)
@@ -41,7 +41,7 @@ Scripts and resources used by those scripts to do what it does (see "What it doe
 
 - Opening links (URL or QR code) in a browser will not work, since there is no browser to open the links
 
-## Warning
+## Important note
 
 This process is meant to be repeated at least every 3-6 months. Running this script/flashing the image *is* the update mechanism. It replaces the OTA system to avoid the modifications being undone by LineageOS official releases. Going 6+ months without updating creates security risks. This goes for any 3rd party apps you add as well.
 
@@ -50,4 +50,6 @@ This process is meant to be repeated at least every 3-6 months. Running this scr
 - Separate music adding/playlist script
     - spotdl -> twelve script
     - yt-dlp -> twelve script
+
+- React Native UI or launcher
 ```
