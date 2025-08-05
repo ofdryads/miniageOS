@@ -1,6 +1,6 @@
 ## Notes on the Twelve app (built-in LineageOS music app)
 
-- AFAIK there is no good way to bulk-add or programmatically populate actual playlists in this app - you would have to click all the songs you want to add to it individually or use m3u files
+- AFAIK there is no good way to bulk-add or programmatically populate "true" playlists in this app - you would have to click all the songs you want to add to it individually or use m3u files
 
 HOWEVER
 
