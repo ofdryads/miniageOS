@@ -32,9 +32,9 @@ Scripts, and resources used by those scripts to do what it does (see "What it do
 
 ## Where to run
 
-✅  Linux (Ubuntu/Mint/Debian-based is best)
-🟡 macOS or WSL (possibly, may cause some issues that need workarounds)
-❌ Windows (will not work)
+- ✅  Linux (Ubuntu/Mint/Debian-based is best)
+- 🟡 macOS or WSL (possibly, may cause some issues that need workarounds)
+- ❌ Windows (will not work)
 
 ## Backstory and "mission statement"
 
