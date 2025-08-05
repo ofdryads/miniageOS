@@ -11,21 +11,23 @@ MANUFACTURER=""
 GRAYSCALE=true   # put true or false
 NIGHT_MODE=true  # put true or false
 
-#Disable saved searches and suggestions of your past searches in Settings
-DISABLE_SETTINGS_SEARCHES=false # put true to disable, or false to save past searches (LOS normal behavior)
-
-# path to custom hosts file - you don't need to change this unless you move the file or rename it
-HOSTS="./hosts"
-
 # Is the phone a Google Pixel?
 IS_PIXEL=false
 
-# Option to tweak which things will be included in the proprietary blob extraction step
-# You can choose to exclude "blobs" if they are causing issues w/ extraction or that you are 100% sure your device doesn't need to boot/function
-TWEAK_BLOBS=false
-
 # If you have a Pixel, this will install the Google Pixel Camera and disable the LineageOS default camera (Aperture)
 GOOGLE_PIXEL_CAMERA=false
+
+# Option to tweak which things will be included in the proprietary blob extraction step
+# You can choose to exclude "blobs" if they are causing issues w/ extraction or that you are 100% sure your device doesn't need to boot/function
+# **If any doubt about above, I wouldn't do this tbh**
+TWEAK_BLOBS=false
+
+#Disable saved searches and suggestions of your past searches in Settings
+DISABLE_SETTINGS_SEARCHES=false # put true to disable, or false to save past searches (LOS normal behavior)
+NO_SETTINGS_SEARCH_FILE="./replace/NoSavedSettingsSearches.java"
+
+# path to custom hosts file - you don't need to change this unless you move the file or rename it
+HOSTS="./replace/hosts"
 
 # Are you me?
 ARE_YOU_ME=false
