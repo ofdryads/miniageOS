@@ -10,6 +10,7 @@ Scripts, and resources used by those scripts to do what it does (see "What it do
 - A launcher
 - "Screen time"-like restrictions
 - Temporary, reversible commands that disable user-level apps until they are either re-enabled in Settings or the phone is updated
+- A fork of LineageOS
 
 ## What it does
 
