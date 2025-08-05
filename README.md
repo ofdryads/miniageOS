@@ -52,7 +52,7 @@ Scripts, and resources used by those scripts to do what it does (see "What it do
 
 ## Important note
 
-This process is meant to be repeated at least every 3-6 months. Running this script/flashing the image *is* the update mechanism. It replaces the OTA system to avoid the modifications being undone by LineageOS official releases. Going 6+ months without updating creates security risks. This goes for any 3rd party apps you add as well.
+This is meant to be repeated at least every 3-6 months. Running this script/flashing the image *is* the update mechanism. It replaces the OTA system to avoid the modifications being undone by LineageOS official releases. Going 6+ months without updating creates security risks. This goes for any 3rd party apps you add as well.
 
 ## (My notes) Maybe also add:
 
