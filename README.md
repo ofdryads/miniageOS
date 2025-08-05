@@ -36,7 +36,9 @@ Scripts, and resources used by those scripts to do what it does (see "What it do
 - 🟡 macOS or WSL (possibly, may cause some issues that need workarounds)
 - ❌ Windows (will not work)
 
-## Backstory and "mission statement"
+## Instructions
+
+## Backstory and "mission statement", or, "why would anyone do this?"
 
 ???
 
