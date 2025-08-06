@@ -11,3 +11,5 @@ HOWEVER
 - As a personal preference, I want to remove the album art as well, since music is not a visual medium and having images slide in and out conflicts w/ the dumbphone ethos
 
 - Try exiftool
+
+# DISCLAIMER
