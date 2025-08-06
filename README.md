@@ -9,7 +9,8 @@ Scripts, and resources used by those scripts to do what it does (see "What it do
 ## What is it *not*?
 - A launcher
 - "Screen time"-like restrictions
-- Temporary, reversible commands that disable user-level apps until they are either re-enabled in Settings or the phone is updated
+- Temporary, reversible commands that disable user-facing apps until they are either re-enabled in Settings or the phone is updated
+- A fork of LineageOS
 
 ## What it does
 
@@ -36,7 +37,9 @@ Scripts, and resources used by those scripts to do what it does (see "What it do
 - 🟡 macOS or WSL (possibly, may cause some issues that need workarounds)
 - ❌ Windows (will not work)
 
-## Backstory and "mission statement"
+## Instructions
+
+## Backstory and "mission statement", or, "why would anyone do this?"
 
 ???
 
@@ -50,7 +53,7 @@ Scripts, and resources used by those scripts to do what it does (see "What it do
 
 ## Important note
 
-This process is meant to be repeated at least every 3-6 months. Running this script/flashing the image *is* the update mechanism. It replaces the OTA system to avoid the modifications being undone by LineageOS official releases. Going 6+ months without updating creates security risks. This goes for any 3rd party apps you add as well.
+This is meant to be repeated at least every 3-6 months. Running this script/flashing the image *is* the update mechanism. It replaces the OTA system to avoid the modifications being undone by LineageOS official releases. Going 6+ months without updating creates security risks. This goes for any 3rd party apps you add as well.
 
 ## (My notes) Maybe also add:
 
