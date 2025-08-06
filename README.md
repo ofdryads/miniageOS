@@ -39,7 +39,7 @@ Scripts, and resources used by those scripts to do what it does (see "What it do
 
 ## Instructions
 
-## Backstory and "mission statement", or, "why would anyone do this?"
+## Backstory and "mission statement" (or, "why would anyone do this?")
 
 ???
 
