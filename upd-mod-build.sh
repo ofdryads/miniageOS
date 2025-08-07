@@ -26,7 +26,7 @@ esac
 
 exec > >(tee -a build.log) 2>&1 # log to this file
 
-source ./config.sh # load variables that will be used
+source ./config.sh # load variables that will be used to differentially(?) execute commands
 
 if [[ "${ARE_YOU_ME,,}" == "true" ]]; then
   source ./ignore/config.sh
@@ -58,7 +58,7 @@ echo "Running device-specific prep before building..."
 breakfast "$CODENAME"
 cd device || { echo "No device directory found - try the 'breakfast' command with your device's CODENAME again"; exit 1; }
 
-#afaik this will always exit if the 'device' subdirectory selected is not the manufacturer - none of the others will contain a folder called *CODENAME* 
+#afaik this will always exit if the 'device' subdirectory selected is not the manufacturer - none of the others should ever contain a folder called *CODENAME* 
 cd "$MANUFACTURER"/"$CODENAME" || { echo "Can't find directory for this manufacturer and device"; exit 1; }
 
 # take the proprietary things to be included and remove problematic/unwanted ones 
@@ -112,12 +112,12 @@ if [ -f "$HOSTS" ]; then
     echo "Replaced LineageOS hosts file with your modified version."
     echo "If you didn't modify it, this will have no effect."
 else
-    echo "Error: Custom hosts file not found - is it in the same folder as this script and named "hosts"?"
+    echo "Error: Custom hosts file not found - did you move it/rename it/change the HOSTS value in config.sh?"
 fi
 
 # Nerf the saved searches in settings by removing DB accessing stuff - here
-# have it fail gracefully and continue building if the file structure changes somehow
-(if the original file is in that location and config set to true: )
+# TODO have it fail gracefully and continue building if the file structure changes somehow
+(if the original file is in the expected location and config variable set to true: )
   cp "$script_in_here/NoSavedSettingsSearches.java" "$lineage_root/packages/apps/SettingsIntelligence/src/com/android/settings/intelligence/search/savedqueries/SavedQueryRecorder.java"
 
 echo "Building the dumb LineageOS image..."
