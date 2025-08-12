@@ -13,7 +13,11 @@ echo "If you see your device listed above, that is good and you can continue"
 echo ""
 echo "If you do not see any device listed, do NOT press Enter yet. Leave this terminal window open, troubleshoot, then come back and when running 'adb devices' in another terminal window shows your device and says 'device', not 'unauthorized'."
 echo ""
-read -p "Press Enter to continue to recovery and flash the new system image..."
+read -p "Press Enter to continue to flash the new system image and recovery:"
+
+adb -d reboot bootloader
+
+fastboot flash vendor_boot vendor_boot.img
 
 fastboot reboot recovery
 
