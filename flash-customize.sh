@@ -50,7 +50,7 @@ curl -s 'https://f-droid.org/en/packages/com.aurora.store/' | grep -oP 'https://
 echo "Temporarily installing the Aurora Store on your phone..."
 adb install aurora-store-latest.apk
 
-echo "Update any third party apps you have installed or add any apps you need (e.g. maps, secure messaging, notes)"
+echo "Update any third party apps you have installed or add any apps you need (e.g. maps, secure messaging, notes, minimalist launcher)"
 echo "Warning: Some apps like Venmo, bank apps, and many (but not all) 2FA apps will not work with an unlocked bootloader."
 read -p "Press Enter when you are done installing/updating what you need: "
 
@@ -60,7 +60,6 @@ rm -f aurora-store-latest.apk
 
 echo "Uninstalling the Aurora Store app from your phone..."
 adb shell am force-stop com.aurora.store
-#perhaps a wait buffer/retry here?
 adb uninstall com.aurora.store
 
 #TODO only for pixel!
