@@ -25,6 +25,7 @@ TWEAK_BLOBS=false
 #Disable saved searches and suggestions of your past searches in Settings
 DISABLE_SETTINGS_SEARCHES=false # put true to disable, or false to save past searches (LOS normal behavior)
 NO_SETTINGS_SEARCH_FILE="./replace/NoSavedSettingsSearches.java"
+PATH_TO_ORIGINAL="$LINEAGE_ROOT/packages/apps/SettingsIntelligence/src/com/android/settings/intelligence/search/savedqueries/SavedQueryRecorder.java"
 
 # path to custom hosts file - you don't need to change this unless you move the file or rename it
 HOSTS="./replace/hosts"
