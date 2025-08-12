@@ -31,9 +31,11 @@ public class SavedQueryRecorder extends AsyncLoader<Void> {
 
     private static final String LOG_TAG = "SavedQueryRecorder";
     private static long MAX_SAVED_SEARCH_QUERY = 0;
+    private final String mQuery;
 
-    public SavedQueryRecorder(Context context) {
+    public SavedQueryRecorder(Context context, String query) {
         super(context);
+        mQuery = query;
     }
 
     @Override
