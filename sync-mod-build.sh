@@ -13,7 +13,7 @@ echo ""
 echo "Additional note: please make sure your computer will stay on and not sleep or shut down while this is running!"
 echo "The first time it builds, it may take many hours, and you can leave it running overnight. Subsequent runs should only take 30-90 mins, depending on your hardware (for build), network (for sync), etc."
 echo ""
-echo "Another note: This script, specifically 'repo sync --force-sync --detach', will destroy any changes you have made on your computer to the LineageOS code that are not re-injected by this script."
+echo "Another note: This script, specifically 'repo sync --force-sync', will destroy any changes you have made on your computer to the LineageOS code that are not re-injected by this script."
 echo "If you do not want that, you can modify the script or not run it."
 echo ""
 echo "If you have done all these things and want to continue, press 'y'"
@@ -47,7 +47,7 @@ fi
 
 cd "$LINEAGE_ROOT"
 echo "Re-syncing repository to get any updates..."
-repo sync --force-sync --detach
+repo sync --force-sync
 
 # set up the build environment
 source build/envsetup.sh
