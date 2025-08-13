@@ -1,14 +1,15 @@
 # miniageOS (mini-LineageOS)
 
-Create a stripped-down "dumbphone" version of LineageOS for your Android phone without giving up the camera quality and touchscreen of a smartphone
+Create a stripped-down "dumbphone" version of LineageOS for your Android phone without giving up the camera quality and touchscreen of a smartphone.
+> dumbphone *(noun)*: A phone that is actually just a phone and only does what you need it to do for day-to-day life.
 
-## What is it?
+## What is this?
 Scripts, and resources used by those scripts to do what it does (see "What it does")
 
 ## What is it *not*?
 - A launcher
 - "Screen time"-like restrictions
-- Temporary, reversible commands that disable user-facing apps that are trivially re-enabled in Settings or when the phone gets an update
+- Temporary, reversible commands that disable user-facing apps which are trivially re-enabled in Settings or when the phone gets an update
 - A fork of LineageOS
 
 ## What it does
@@ -44,6 +45,5 @@ Scripts, and resources used by those scripts to do what it does (see "What it do
 - *(The points above apply to any phone with an unlocked bootloader, including ones running official LineageOS builds. It even applies to many other custom ROMs that allow re-locking the bootloader)*
 - Opening links (URL or QR code) in a browser will not work, since there is no browser to open the links
 
-
 ## Important note
-This is meant to be repeated every 2 to 4 months or so. Running this script/flashing the image *is* the update mechanism. It replaces the OTA system to avoid the modifications being undone by LineageOS official releases. Going 6+ months without updating creates security risks. This goes for any 3rd party apps you add as well.
+This is meant to be repeated every few months or so. Running this script/flashing the image *is* the update mechanism. It replaces the OTA system to avoid the modifications being undone by LineageOS official releases. Going 6+ months without updating creates security risks. This goes for any 3rd party apps you add as well.
