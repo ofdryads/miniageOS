@@ -45,6 +45,5 @@ Scripts, and resources used by those scripts to do what it does (see "What it do
   *(The points above apply to any phone with an unlocked bootloader, including ones running official LineageOS builds. It even applies to many other custom ROMs that allow re-locking the bootloader)*
 - Opening links (URL or QR code) in a browser will not work, since there is no browser to open the links
 
-
 ## Important note
-This is meant to be repeated every 2 to 4 months or so. Running this script/flashing the image *is* the update mechanism. It replaces the OTA system to avoid the modifications being undone by LineageOS official releases. Going 6+ months without updating creates security risks. This goes for any 3rd party apps you add as well.
+This is meant to be repeated every few months or so. Running this script/flashing the image *is* the update mechanism. It replaces the OTA system to avoid the modifications being undone by LineageOS official releases. Going 6+ months without updating creates security risks. This goes for any 3rd party apps you add as well.
