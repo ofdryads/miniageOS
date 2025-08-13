@@ -21,17 +21,17 @@ fastboot flash vendor_boot vendor_boot.img
 
 fastboot reboot recovery
 
-read -p "Go to the update option in the recovery menu then hit enter: "
+read -p "Go to Apply Update -> Apply from ADB in the recovery menu then hit enter: "
 
 # Sideload the zip file just made
 echo "'Dirty flashing' the new dumb image..."
-if ("lineage-"$codename"-{today's date like }-UNOFFICIAL.zip" in pwd)
-adb sideload "lineage-"$codename"-{today's date like }-UNOFFICIAL.zip" #FIX pattern
-else error, ask for the path
+# if ("lineage-"$codename"-{today's date like one below}-UNOFFICIAL.zip" in pwd)
+# adb sideload "lineage-"$codename"-{today's date like one below}-UNOFFICIAL.zip" #FIX pattern
+adb sideload lineage-22.2-20250812-UNOFFICIAL-lynx.zip
 
-adb reboot
+# else error, ask for the path to the zip explicitly
 
-read -p "Is the phone on and unlocked now? Hit Enter when it is"
+read -p "Is the phone rebooted and unlocked now? Hit Enter when it is"
 
 # Gray phone
 if [$GRAYSCALE]; then
@@ -66,19 +66,20 @@ echo "Uninstalling the Aurora Store app from your phone..."
 adb shell am force-stop com.aurora.store
 adb uninstall com.aurora.store
 
-#TODO only for pixel!
+#TODO make it only for pixel!
 # disable built-in lineageOS camera - leave it installed on the phone as a backup
 adb shell pm disable-user --user 0 org.lineageos.aperture
 
-# install pixel camera - replace hardcoded path with config variable or pull from apkmirror
+# install pixel camera - replace hardcoded path with a config variable or pull from apkmirror
 # We want android 15+ (NOT 16+), arm64-v8a, nodpi
-# Get latest one - handle bundle vs 1 apk, also check signature
+# Get the latest one - handle bundle vs 1 apk, also check signature
 # https://www.apkmirror.com/apk/google-inc/camera/variant-%7B%22arches_slug%22%3A%5B%22arm64-v8a%22%5D%2C%22dpis_slug%22%3A%5B%22nodpi%22%5D%2C%22minapi_slug%22%3A%22minapi-35%22%7D/
 # there is also a record/notifications of updates here: https://www.pushbullet.com/channel-popup?tag=am-677523121
-adb install "/home/aph/Downloads/com.google.android.GoogleCamera_9.8.102.738511538.14-68281438_minAPI35(arm64-v8a)(nodpi)_apkmirror.com.apk"
+adb install "{my downloads folder - PLACEHOLDER}/com.google.android.GoogleCamera_9.8.102.738511538.14-68281438_minAPI35(arm64-v8a)(nodpi)_apkmirror.com.apk"
 
-# TODO should only attempt if pixel - it wont fail otherwise, but it wont do anything either
+# TODO should only attempt if pixel
 echo "Disabling some unnecessary Google programs on the phone..."
+# NOTE: with my edited proprietary-files.txt, the 1st one is not part of the system image anyways
 adb shell pm disable-user --user 0 com.google.android.as # Android System Intelligence
 adb shell pm disable-user --user 0 com.google.android.as.oss # Private Compute Services
 

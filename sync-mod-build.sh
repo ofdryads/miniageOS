@@ -26,7 +26,7 @@ esac
 
 exec > >(tee -a build.log) 2>&1 # log to this file
 
-source ./config.sh # load variables that will be used to differentially(?) execute commands
+source ./config.sh # load variables that will be used to differentially execute commands
 
 if [[ "${ARE_YOU_ME,,}" == "true" ]]; then
   source ./ignore/config.sh
@@ -68,6 +68,8 @@ if [[ "$CODENAME" == "lynx" ]]; then
     cp "$LINEAGE_ROOT"/device/google/lynx/lynx/proprietary-files.txt $script_in_here
     # TODO have user modify file, get input when done, and cp back to "$LINEAGE_ROOT"/device/google/lynx/lynx/proprietary_files.txt
 fi
+
+#TODO if device is lynx, just replace the original file with new based on which things should be excluded
 
 # extract proprietary blobs, or overwrite previous blobs with updated ones
 echo "Extracting the latest proprietary blobs for your device from the official LOS build..."
