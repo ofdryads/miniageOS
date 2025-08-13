@@ -1,8 +1,9 @@
 # miniageOS (mini-LineageOS)
 
 Create a stripped-down "dumbphone" version of LineageOS for your Android phone without giving up the camera quality and touchscreen of a smartphone
+dumbphone (noun): A phone that is actually just a phone and only does what you need it to do for day-to-day life.
 
-## What is it?
+## What is this project?
 Scripts, and resources used by those scripts to do what it does (see "What it does")
 
 ## What is it *not*?
