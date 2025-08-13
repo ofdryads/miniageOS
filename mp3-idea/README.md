@@ -4,12 +4,7 @@
 
 HOWEVER
 
-- Any mp3 file within a given subdirectory of /Music is treated as belonging to an album named {subdirectory}, if and only if the mp3 file's "Album" metadata field is not populated
+- Any mp3 file within a given subdirectory of /Music is treated as belonging to an album named {subdirectory}, but only if the mp3 file's "Album" metadata field is empty
 
 - So, stripping mp3 files of their "Album" metadata before copying them to a folder within /Music allows "Albums" on the phone to effectively function as playlists (they are consolidated, curated, have shuffle, etc.)
-
-- As a personal preference, I want to remove the album art as well, since music is not a visual medium and having images slide in and out conflicts w/ the dumbphone ethos
-
-- Try exiftool
-
-# DISCLAIMER
+    - Try exiftool

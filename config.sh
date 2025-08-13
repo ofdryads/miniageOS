@@ -18,7 +18,7 @@ IS_PIXEL=false
 GOOGLE_PIXEL_CAMERA=false
 
 # Option to tweak which things will be included in the proprietary blob extraction step
-# You can choose to exclude "blobs" if they are causing issues w/ extraction or that you are 100% sure your device doesn't need to boot/function
+# You can choose to exclude Google/cell carrier/other packages if they are causing issues w/ extraction or that you are 100% sure your device doesn't need to boot/function
 # **If any doubt about above, I wouldn't do this tbh**
 TWEAK_BLOBS=false
 
