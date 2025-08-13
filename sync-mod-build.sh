@@ -1,39 +1,33 @@
 #!/bin/bash
 
-echo "Checklist before running this script:"
-echo "1. You should already have LineageOS installed on your phone. If you do not, you can use their official version and do a clean flash (*that process WILL wipe all data from your phone! Running this script will not)"
-echo "   Installing the official version is fairly quick and simple if you follow their guide."
-echo "2. You should have gotten up to the 'Preparing the build environment' section of the LineageOS Wiki build guide, including having installed all dependencies and run 'repo init', then 'repo sync' at least once"
-echo "   *Step 2 only needs to be done ONCE. If you've EVER done those steps before, you don't need to do them again."
-echo "3. You should have adb/fastboot installed on your computer"
-echo "4. You should have added any websites you want permanently blocked on your phone to the hosts file you downloaded with this script. If you do not want any blocked, ignore this step."
-echo "5. You should have enabled USB debugging in Developer Settings and authorized it for the computer you are working on"
-echo "6. Add the appropriate values in the config.sh file, keeping it in the same folder as this script"
-echo ""
-echo "Additional note: please make sure your computer will stay on and not sleep or shut down while this is running!"
-echo "The first time it builds, it may take many hours, and you can leave it running overnight. Subsequent runs should only take 30-90 mins, depending on your hardware (for build), network (for sync), etc."
-echo ""
-echo "Another note: This script, specifically 'repo sync --force-sync', will destroy any changes you have made on your computer to the LineageOS code that are not re-injected by this script."
-echo "If you do not want that, you can modify the script or not run it."
-echo ""
-echo "If you have done all these things and want to continue, press 'y'"
-echo "Otherwise, you can press 'n', go do them, and come back later to run the script"
-read -p "Continue? (y/n): " yn
-case $yn in
-    [Yy]* ) ;;
-    * ) exit 1;;
-esac
+cat <<'EOF'
+===== Checklist Before Running This Script =====
 
-exec > >(tee -a build.log) 2>&1 # log to this file
+1. You already have LineageOS installed on your phone
+2. You have gotten up to the 'Preparing the build environment' section of the LineageOS Wiki build guide, including having installed all dependencies and run 'repo init'
+3. Have adb and fastboot are installed on your computer
+4. (Optional) Edited the hosts file in the "replace" folder
+5. Enabled USB debugging and authorized your computer
+6. Added the correct values to the config.sh file in the same folder as this script
 
-source ./config.sh # load variables that will be used to differentially execute commands
+Notes:
+- Keep computer awake - first build may take several hours but should only be 30-90 mins after the initial build
+- 'repo sync --force-sync' will overwrite any changes you made to the LineageOS code
+EOF
 
-if [[ "${ARE_YOU_ME,,}" == "true" ]]; then
-  source ./ignore/config.sh
-fi
+read -rp "Continue? (y/n): " yn
+[[ $yn =~ ^[Yy]$ ]] || { echo "Exiting."; exit 1; }
 
 # directory where the dumbphone scripts and files live
 script_in_here="$(dirname "$0")"
+
+exec > >(tee -a build.log) 2>&1 # log to this file
+
+source "$script_in_here/config.sh" # load variables that will be used to differentially execute commands
+
+if [[ "${ARE_YOU_ME,,}" == "true" ]]; then
+  source "$script_in_here/ignore/config.sh"
+fi
 
 if ! command -v adb &> /dev/null; then
     echo "Error: adb not installed or not found"
@@ -66,7 +60,6 @@ cd device/"$MANUFACTURER"/"$CODENAME" || { echo "Can't find directory for this m
 if [[ "$CODENAME" == "lynx" ]]; then
     # TODO search vendor/device for proprietary-files.txt recursively since not all devices have this same structure as the pixels
     cp "$LINEAGE_ROOT"/device/google/lynx/lynx/proprietary-files.txt $script_in_here
-    # TODO have user modify file, get input when done, and cp back to "$LINEAGE_ROOT"/device/google/lynx/lynx/proprietary_files.txt
 fi
 
 #TODO if device is lynx, just replace the original file with new based on which things should be excluded
@@ -80,7 +73,7 @@ rm -rf "$LINEAGE_ROOT/vendor/$MANUFACTURER/$CODENAME"
 
 # TODO pull the latest LOS nightly signed zip
 #PLACEHOLDER
-latest_off_zip="/home/aph/Downloads/lineage-22.2-20250801-nightly-lynx-signed.zip"
+latest_off_zip="{MYDOWNLOADSFOLDER-PLACEHOLDER}/lineage-22.2-20250801-nightly-lynx-signed.zip"
 ./extract-files.py "$latest_off_zip"
 
 # for phones where it didnt work the first time bc it needed the proprietary blobs first (no harm in running twice either way)
@@ -109,8 +102,6 @@ fi
 echo "Re-syncing repo to apply the dumbphone manifest changes to the source code..."
 repo sync
 
-# reminder if coming back later: steps below HAVE TO come after the final repo sync before build
-
 if [ -f "$HOSTS" ]; then
     cp "$HOSTS" "$LINEAGE_ROOT/system/core/rootdir/etc/hosts"
     echo "Replaced LineageOS hosts file with your modified version."
@@ -121,6 +112,7 @@ fi
 
 # Nerf the saved searches in settings by removing DB stuff and leaving skeleton
 # have it fail gracefully and continue building if the file structure changes somehow
+# confirmed this behaves as expected when file swapped
 if [[ "${DISABLE_SETTINGS_SEARCHES,,}" == "true" ]] && [ -f "$PATH_TO_ORIGINAL" ]; then
     cp "$NO_SETTINGS_SEARCH_FILE" "$PATH_TO_ORIGINAL"
     echo "Disabled saving past searches in settings"
