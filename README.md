@@ -8,7 +8,7 @@ Scripts, and resources used by those scripts to do what it does (see "What it do
 ## What is it *not*?
 - A launcher
 - "Screen time"-like restrictions
-- Temporary, reversible commands that disable user-facing apps that are trivially re-enabled in Settings or when the phone gets an update
+- Temporary, reversible commands that disable user-facing apps which are trivially re-enabled in Settings or when the phone gets an update
 - A fork of LineageOS
 
 ## What it does
