@@ -41,7 +41,7 @@ Scripts, and resources used by those scripts to do what it does (see "What it do
 ## What will *not* work when using a phone running this build?
 - Banking apps, Venmo, NFC/contactless pay (like Google Pay, Apple Pay, or Samsung Pay)
 - Many popular 2FA apps (Microsoft, Google, Authy, etc.). However, open-source alternatives like Aegis *will* work perfectly fine.
-  *(The points above apply to any phone with an unlocked bootloader, including ones running official LineageOS builds. It even applies to many other custom ROMs that allow re-locking the bootloader)*
+- *(The points above apply to any phone with an unlocked bootloader, including ones running official LineageOS builds. It even applies to many other custom ROMs that allow re-locking the bootloader)*
 - Opening links (URL or QR code) in a browser will not work, since there is no browser to open the links
 
 

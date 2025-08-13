@@ -8,3 +8,5 @@ HOWEVER
 
 - So, stripping mp3 files of their "Album" metadata before copying them to a folder within /Music allows "Albums" on the phone to effectively function as playlists (they are consolidated, curated, have shuffle, etc.)
     - Try exiftool
+
+- Not a problem with yt-dlp sourced mp3s since they don't download w/ that metadata
