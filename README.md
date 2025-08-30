@@ -36,12 +36,13 @@ Scripts, and resources used by those scripts to do what it does (see "What it do
 - No: Windows (will not work)
 
 ## Instructions
-  - TBA, it is a work in progress, but the base scripts (sync-mod-build.sh, flash-customize.sh) are very close to finished
+  - TBA - it is a work in progress, but the base scripts (sync-mod-build.sh, flash-customize.sh) are very close to finished
   - it still has some pseudocode and commented out parts in the scripts, but all the individual commands in them, as well as the "replace" files, work as intended and preserve the system's normal functions
 
 ## What will *not* work when using a phone running this build?
 - Banking apps, Venmo, NFC/contactless pay (like Google Pay, Apple Pay, or Samsung Pay)
-- Many popular 2FA apps (Microsoft, Google, Authy, etc.). However, open-source alternatives like Aegis *will* work perfectly fine.
+- RCS messaging (not without significant configuration, and may not even work consistently then). Regular SMS, most third party messaging apps, and iMessage-via-Mac services *will* work.
+- Apple Music official client
 - *(The points above apply to any phone with an unlocked bootloader, including ones running official LineageOS builds. It even applies to many other custom ROMs that allow re-locking the bootloader)*
 - Opening links (URL or QR code) in a browser will not work, since there is no browser to open the links
 
