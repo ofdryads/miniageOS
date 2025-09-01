@@ -20,11 +20,11 @@ Scripts, and resources used by those scripts to do what it does (see "What it do
 - Preserves all existing apps, settings, and other user data on phones that already have LineageOS installed
 - Does not include any app store or Google Play Services in the system image
 - Builds without the user-facing "Updater" so that you will not overwrite changes made to the operating system with OTA updates
-- After the modified LineageOS image is built and flashed to your phone, it auto-installs the Aurora Store temporarily from a reputable APK source (F-droid), waits for you to update or install any apps you need (like secure messaging, notes, and maps), then auto-uninstalls the store when you are done
+- After the modified LineageOS image is built and flashed to your phone, it auto-downloads and installs the Aurora Store temporarily from a reputable source (F-droid), waits for you to update or install any apps you need (like secure messaging, notes, and maps), then auto-uninstalls the store when you are done
 - For Pixel phones:
     - Replaces the default LineageOS camera app with the higher-quality Google Pixel camera app, without needing GApps, Google Play Services, or microG
-    - Selectively excludes certain Google/carrier software from the build by preventing their "blobs" from being extracted, such as the "OK Google" listening software and Verizon apps
     - Disables unnecessary machine learning-based apps that use excessive data and battery power (Android System Intelligence and Private Compute Services)
+    - Option to selectively exclude certain Google/carrier software from the build by preventing their "blobs" from being extracted, such as the "OK Google" listening software and Verizon apps
 
 ### Other benefits
 - No need for root access to make any of these changes
@@ -40,7 +40,7 @@ Scripts, and resources used by those scripts to do what it does (see "What it do
 
 ## What things will *not* work when using a phone running this build?
 - Banking apps, Venmo, NFC/contactless pay (like Google Pay, Apple Pay, or Samsung Pay)
-- RCS messaging (not without significant configuration, and may not even work consistently then). Regular SMS, most third party messaging apps, and iMessage-via-Mac services *will* work.
+- RCS messaging (not without significant configuration, and may not even work consistently then). Regular SMS, most messaging apps, and iMessage-via-Mac services *will* work.
 - Apple Music official client
 - *(The points above apply to any phone with an unlocked bootloader, including ones running official LineageOS builds. It even applies to many other custom ROMs that allow re-locking the bootloader)*
 - Opening links (URL or QR code) in a browser will not work, since there is no browser to open the links.
