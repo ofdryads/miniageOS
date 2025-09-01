@@ -1,7 +1,7 @@
 #!/bin/bash
 
 cat <<'EOF'
-===== Checklist Before Running This Script =====
+===== Checklist before running this script =====
 
 1. You already have LineageOS installed on your phone
 2. You have gotten up to the 'Preparing the build environment' section of the LineageOS Wiki build guide, including having installed all dependencies and run 'repo init'
@@ -11,8 +11,8 @@ cat <<'EOF'
 6. Added the correct values to the config.sh file in the same folder as this script
 
 Notes:
-- Keep computer awake - first build may take several hours but should only be 30-90 mins after the initial build
-- 'repo sync --force-sync' will overwrite any changes you made to the LineageOS code
+- Keep computer awake - first build may take many hours but will probably only take 30-90 mins for subsequent builds
+- This will overwrite any changes you made to the LineageOS code on your computer
 EOF
 
 read -rp "Continue? (y/n): " yn
@@ -70,8 +70,9 @@ cd device/"$MANUFACTURER"/"$CODENAME"
 if [[ $IS_PIXEL && $TWEAK_BLOBS ]]; then
     echo "Searching device folder for proprietary-files.txt..."
 
+    #FIX THIS
     blobs_txt=$(find "$LINEAGE_ROOT/device/$MANUFACTURER/$CODENAME" -type f -name "proprietary-files.txt" | head -n1)
-
+    
     if [ -z "$blobs_txt" ]; then
         echo "Error: Could not find proprietary-files.txt under device/$MANUFACTURER/$CODENAME"
         exit 1
@@ -144,8 +145,11 @@ echo "Building the dumb LineageOS image..."
 croot
 brunch "$CODENAME"
 
-echo "DUMBPHONE: build process complete"
 cd $OUT # go to build output folder when done
+
+if [[ "$(pwd)" == "$LINEAGE_ROOT/out/target/product/$CODENAME" ]]; then
+    echo "DUMBPHONE: build process complete"
+fi
 
 # if [ -f "$script_in_here/flash-customize.sh" ]; then
 #    echo "Running flash and customization script..."
