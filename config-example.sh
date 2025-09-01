@@ -1,5 +1,5 @@
 
-# RENAME OR COPY THIS FILE TO config.sh BEFORE RUNNING SCRIPTS
+# RENAME OR COPY THIS FILE TO "config.sh" in this same folder BEFORE RUNNING SCRIPTS
 
 # see https://wiki.lineageos.org/devices/ and click on your phone's vendor
 # it should say "codename: {xyz}" below your phone model - that is the value for CODENAME
@@ -14,8 +14,8 @@ MANUFACTURER=""
 GRAYSCALE=true   # put true or false
 NIGHT_MODE=true  # put true or false
 
-# path to the downloaded latest official lineageos release from
-# https://download.lineageos.org/devices/{CODENAME}/builds
+# path to the downloaded latest official lineageos release from https://download.lineageos.org/devices/{CODENAME}/builds
+# used for blobs
 OFFICIAL_ZIP= 
 
 # Is the phone a Google Pixel?
