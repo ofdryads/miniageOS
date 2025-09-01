@@ -9,8 +9,23 @@ Scripts, and resources used by those scripts to do what it does (see "What it do
 ## What is it *not*?
 - A launcher
 - "Screen time"-like restrictions
-- Temporary, reversible commands that disable user-facing apps which are trivially re-enabled in Settings or when the phone gets an update
-- A fork of LineageOS
+- Temporary, reversible commands that disable certain apps, which are trivially re-enabled in Settings or when the phone gets an update
+- A fork of LineageOS (it builds the official, up-to-date LineageOS, with modifications being made at build time)
+
+## What it does
+- Builds the system image without the default browser *or* the fallback browser
+- Compiles with a custom hosts file so that your phone will "hard-block" any domains you choose
+- Optionally sets the phone to grayscale and night mode (blue light filter)
+- Pulls the most recent LineageOS updates and device-specific vendor updates from their official sources before building each time, so the phone stays up to datend only does what you need it to do for day-to-day life.
+
+## What is this?
+Scripts, and resources used by those scripts to do what it does (see "What it does")
+
+## What is it *not*?
+- A launcher
+- "Screen time"-like restrictions
+- Temporary, reversible commands that disable certain apps, which are trivially re-enabled in Settings or when the phone gets an update
+- A fork of LineageOS (it builds the official, up-to-date LineageOS, with modifications being made at build time)
 
 ## What it does
 - Builds the system image without the default browser *or* the fallback browser
@@ -24,7 +39,7 @@ Scripts, and resources used by those scripts to do what it does (see "What it do
 - For Pixel phones:
     - Replaces the default LineageOS camera app with the higher-quality Google Pixel camera app, without needing GApps, Google Play Services, or microG
     - Selectively excludes certain Google/carrier software from the build by preventing their "blobs" from being extracted, such as the "OK Google" listening software and Verizon apps
-    - Disables unnecessary machine learning-based apps that use excessive cellular data and battery power (Android System Intelligence and Private Compute Services)
+    - Disables unnecessary machine learning-based apps that use excessive data and battery power (Android System Intelligence and Private Compute Services)
 
 ### Other benefits
 - No need for root access to make any of these changes
@@ -36,8 +51,7 @@ Scripts, and resources used by those scripts to do what it does (see "What it do
 - No: Windows (will not work)
 
 ## Instructions
-  - TBA - it is a work in progress, but the base scripts (sync-mod-build.sh, flash-customize.sh) are very close to finished
-  - it still has some pseudocode and commented out parts in the scripts, but all the individual commands in them, as well as the "replace" files, work as intended and preserve the system's normal functions
+  - TBA 
 
 ## What will *not* work when using a phone running this build?
 - Banking apps, Venmo, NFC/contactless pay (like Google Pay, Apple Pay, or Samsung Pay)
