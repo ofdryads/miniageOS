@@ -1,4 +1,4 @@
-# miniageOS (mini-LineageOS)
+`# miniageOS (mini-LineageOS)
 
 Create a stripped-down "dumbphone" version of LineageOS for your Android phone without giving up the camera quality and touchscreen of a smartphone.
 > dumbphone *(noun)*: A phone that is actually just a phone and only does what you need it to do for day-to-day life.
@@ -36,7 +36,12 @@ Scripts, and resources used by those scripts to do what it does (see "What it do
 - No: Windows (will not work)
 
 ## Instructions
-  - TBA 
+  - TBA - section needs improving!
+  - git clone this repo
+  - cd miniageOS
+  - enter values in config-example.sh and rename or copy to config.sh in that same folder
+  - run chmod +x sync-mod-build.sh flash-customize.sh
+  - run ./sync-mod-build.sh
 
 ## What things will *not* work when using a phone running this build?
 - Banking apps, Venmo, NFC/contactless pay (like Google Pay, Apple Pay, or Samsung Pay)
