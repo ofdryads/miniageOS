@@ -9,22 +9,7 @@ Scripts, and resources used by those scripts to do what it does (see "What it do
 ## What is it *not*?
 - A launcher
 - "Screen time"-like restrictions
-- Temporary, reversible commands that disable certain apps, which are trivially re-enabled in Settings or when the phone gets an update
-- A fork of LineageOS (it builds the official, up-to-date LineageOS, with modifications being made at build time)
-
-## What it does
-- Builds the system image without the default browser *or* the fallback browser
-- Compiles with a custom hosts file so that your phone will "hard-block" any domains you choose
-- Optionally sets the phone to grayscale and night mode (blue light filter)
-- Pulls the most recent LineageOS updates and device-specific vendor updates from their official sources before building each time, so the phone stays up to datend only does what you need it to do for day-to-day life.
-
-## What is this?
-Scripts, and resources used by those scripts to do what it does (see "What it does")
-
-## What is it *not*?
-- A launcher
-- "Screen time"-like restrictions
-- Temporary, reversible commands that disable certain apps, which are trivially re-enabled in Settings or when the phone gets an update
+- Temporary, reversible commands that disable certain apps which are trivially re-enabled in Settings or when the phone gets an update
 - A fork of LineageOS (it builds the official, up-to-date LineageOS, with modifications being made at build time)
 
 ## What it does
@@ -53,12 +38,12 @@ Scripts, and resources used by those scripts to do what it does (see "What it do
 ## Instructions
   - TBA 
 
-## What will *not* work when using a phone running this build?
+## What things will *not* work when using a phone running this build?
 - Banking apps, Venmo, NFC/contactless pay (like Google Pay, Apple Pay, or Samsung Pay)
 - RCS messaging (not without significant configuration, and may not even work consistently then). Regular SMS, most third party messaging apps, and iMessage-via-Mac services *will* work.
 - Apple Music official client
 - *(The points above apply to any phone with an unlocked bootloader, including ones running official LineageOS builds. It even applies to many other custom ROMs that allow re-locking the bootloader)*
-- Opening links (URL or QR code) in a browser will not work, since there is no browser to open the links
+- Opening links (URL or QR code) in a browser will not work, since there is no browser to open the links.
 
 ## Important note
-This is meant to be repeated every few months or so. Running this script/flashing the image *is* the update mechanism. It replaces the OTA system to avoid the modifications being undone by LineageOS official releases. Going 6+ months without updating creates security risks. This goes for any 3rd party apps you add as well.
+This is meant to be repeated every few months or so. Running this script/flashing the image *is* the update mechanism. It replaces the OTA system to avoid the modifications being undone by official LineageOS releases. Going 6+ months without updating creates security risks. This goes for any 3rd party apps you add as well.
