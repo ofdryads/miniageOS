@@ -1,3 +1,6 @@
+
+# RENAME OR COPY THIS FILE TO config.sh BEFORE RUNNING SCRIPTS
+
 # see https://wiki.lineageos.org/devices/ and click on your phone's vendor
 # it should say "codename: {xyz}" below your phone model - that is the value for CODENAME
 CODENAME=""
@@ -11,11 +14,16 @@ MANUFACTURER=""
 GRAYSCALE=true   # put true or false
 NIGHT_MODE=true  # put true or false
 
+# path to the downloaded latest official lineageos release from
+# https://download.lineageos.org/devices/{CODENAME}/builds
+OFFICIAL_ZIP= 
+
 # Is the phone a Google Pixel?
 IS_PIXEL=false
 
 # If you have a Pixel, this will install the Google Pixel Camera and disable the LineageOS default camera (Aperture)
 GOOGLE_PIXEL_CAMERA=false
+PIXEL_CAMERA_APK= # path to apk for google pixel camera app
 
 # Option to tweak which things will be included in the proprietary blob extraction step
 # You can choose to exclude Google/cell carrier/other packages if they are causing issues w/ extraction or that you are 100% sure your device doesn't need to boot/function
@@ -29,7 +37,3 @@ PATH_TO_ORIGINAL="$LINEAGE_ROOT/packages/apps/SettingsIntelligence/src/com/andro
 
 # path to custom hosts file - you don't need to change this unless you move the file or rename it
 HOSTS="./replace/hosts"
-
-# Are you me?
-ARE_YOU_ME=false
-# You will not have the files the script will reference if this is set to true and you are not me

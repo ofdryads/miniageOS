@@ -1,5 +1,7 @@
 ignore/*
+other.txt
 
 build.log
 
-other.txt
+config.sh
+replace/proprietary-files.txt

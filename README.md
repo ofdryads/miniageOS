@@ -31,7 +31,7 @@ Scripts, and resources used by those scripts to do what it does (see "What it do
 - Your battery will last for days
 
 ## Where to run
-- Yes: Linux (Ubuntu/Mint/Debian-based is best)
+- Yes: Linux
 - Maybe: macOS or WSL (possibly, may cause issues that need workarounds)
 - No: Windows (will not work)
 

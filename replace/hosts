@@ -1,6 +1,6 @@
 127.0.0.1       localhost
 ::1             ip6-localhost
 
-0.0.0.0 #blocked-website-1.com
-0.0.0.0 #blocked-website-2.com
-0.0.0.0 #blocked-website-3.com
+0.0.0.0 #blocked-domain-1.com
+0.0.0.0 #blocked-domain-2.com
+0.0.0.0 #blocked-domain-3.com
