@@ -18,17 +18,18 @@ EOF
 read -rp "Continue? (y/n): " yn
 [[ $yn =~ ^[Yy]$ ]] || { echo "Exiting."; exit 1; }
 
-# directory where the dumbphone scripts and files live
-script_in_here="$(dirname "$0")"
+script_in_here="$(dirname "$0")" # folder where the dumbphone scripts and files live
 
 exec > >(tee -a build.log) 2>&1 # log to this file
 
-source "$script_in_here/config.sh" # load variables that will be used to differentially execute commands
-
-if [[ "${ARE_YOU_ME,,}" == "true" ]]; then
-  source "$script_in_here/ignore/config.sh"
+if [ -z "$script_in_here/config.sh" ]; then
+    echo "No file named config.sh found in this project's root folder - you may still need to rename or copy config-example.sh to config.sh (after entering the right values)"
+    exit 1
 fi
 
+source "$script_in_here/config.sh" # load variables that will be used to differentially execute commands
+
+# early issue checks to exit early
 if ! command -v adb &> /dev/null; then
     echo "Error: adb not installed or not found"
     exit 1
@@ -36,6 +37,11 @@ fi
 
 if [ ! -d "$LINEAGE_ROOT/.repo" ] || [ ! -d "$LINEAGE_ROOT/packages" ]; then
     echo "Error: directory contents not found - maybe you entered the wrong path to the LineageOS directory, or you have not run the original 'repo init' and 'repo sync' for base LineageOS yet"
+    exit 1
+fi
+
+if [ -z "$OFFICIAL_ZIP" ]; then
+    echo "Error: OFFICIAL_ZIP (path to lineageos official release zip) is not set in config.sh"
     exit 1
 fi
 
@@ -51,30 +57,47 @@ echo "Running device-specific prep before building..."
 # even for devices where this will fail without proprietary blobs, it needs to run in order to populate lineage/device w/ the manufacturer and device
 breakfast "$CODENAME"
 
-#afaik this will always exit if the 'device' subdirectory selected is not the manufacturer - none of the others should ever contain a folder called *CODENAME* 
-cd device/"$MANUFACTURER"/"$CODENAME" || { echo "Can't find directory for this manufacturer and device"; exit 1; }
+
+if [ ! -d "device/$MANUFACTURER/$CODENAME" ]; then
+    echo "Expected path to device folder not found, exiting..."
+    exit 1
+fi
+
+cd device/"$MANUFACTURER"/"$CODENAME"
 
 # take the proprietary things to be included and remove problematic/unwanted ones 
 # DO NOT DO THIS CARELESSLY
-# NEEDS FIXING / TESTING
-if [[ "$CODENAME" == "lynx" ]]; then
-    # TODO search vendor/device for proprietary-files.txt recursively since not all devices have this same structure as the pixels
-    cp "$LINEAGE_ROOT"/device/google/lynx/lynx/proprietary-files.txt $script_in_here
-fi
+if [[ $IS_PIXEL && $TWEAK_BLOBS ]]; then
+    echo "Searching device folder for proprietary-files.txt..."
 
-#TODO if device is lynx, just replace the original file with new based on which things should be excluded
+    blobs_txt=$(find "$LINEAGE_ROOT/device/$MANUFACTURER/$CODENAME" -type f -name "proprietary-files.txt" | head -n1)
+
+    if [ -z "$blobs_txt" ]; then
+        echo "Error: Could not find proprietary-files.txt under device/$MANUFACTURER/$CODENAME"
+        exit 1
+    fi
+
+    cp "$blobs_txt" "$script_in_here/replace/proprietary-files.txt"
+
+    echo "Edit and save the file at miniageos/replace/proprietary-files.txt, commenting out or deleting any unnecessary blobs."
+    read -rp "Press Enter when done to continue..."
+
+    cp "$script_in_here/replace/proprietary-files.txt" "$blobs_txt"
+fi
 
 # extract proprietary blobs, or overwrite previous blobs with updated ones
 echo "Extracting the latest proprietary blobs for your device from the official LOS build..."
 
 # remove past blobs for clean slate
 # check for the folder and contents first then:
-rm -rf "$LINEAGE_ROOT/vendor/$MANUFACTURER/$CODENAME"
+if [ -d "$LINEAGE_ROOT/vendor/$MANUFACTURER/$CODENAME" ]; then
+    rm -rf "$LINEAGE_ROOT/vendor/$MANUFACTURER/$CODENAME"
+else
+    echo "Did not find device directory, skipping delete"
+fi
 
-# TODO pull the latest LOS nightly signed zip
-#PLACEHOLDER
-latest_off_zip="{MYDOWNLOADSFOLDER-PLACEHOLDER}/lineage-22.2-20250801-nightly-lynx-signed.zip"
-./extract-files.py "$latest_off_zip"
+# TODO pull the latest LOS nightly signed zip instead of having path in config
+./extract-files.py "$OFFICIAL_ZIP"
 
 # for phones where it didnt work the first time bc it needed the proprietary blobs first (no harm in running twice either way)
 breakfast "$CODENAME"
@@ -82,8 +105,7 @@ breakfast "$CODENAME"
 # Check for dumbphone manifest file, create if it doesn't exist yet
 local_manif_file="$LINEAGE_ROOT/.repo/local_manifests/dumbphone.xml"
 
-if [ ! -f "$local_manif_file" ]; then
-    touch $local_manif_file                       
+if [ ! -f "$local_manif_file" ]; then                
     cat > "$local_manif_file" <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest>
@@ -119,16 +141,15 @@ if [[ "${DISABLE_SETTINGS_SEARCHES,,}" == "true" ]] && [ -f "$PATH_TO_ORIGINAL" 
 fi
 
 echo "Building the dumb LineageOS image..."
-source build/envsetup.sh
 croot
 brunch "$CODENAME"
 
 echo "DUMBPHONE: build process complete"
 cd $OUT # go to build output folder when done
 
-if [ -f "$script_in_here/flash-customize.sh" ]; then
-    echo "Running flash and customization script..."
-    source "$script_in_here/flash-customize.sh"
-else
-    echo "Flashing/customization script not found in root - flash build manually or run flash-customize.sh manually"
-fi
+# if [ -f "$script_in_here/flash-customize.sh" ]; then
+#    echo "Running flash and customization script..."
+#    source "$script_in_here/flash-customize.sh"
+#else
+#    echo "Flashing/customization script not found in root - flash build manually or run flash-customize.sh manually"
+#fi
