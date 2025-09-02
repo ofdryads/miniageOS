@@ -7,6 +7,7 @@
 - Disable animations in accessibility settings. You will be surprised how much this rips away the illusion that the phone is a vast "place" you can "navigate". 
 - Put a matte cover on your screen - it helps with glare outside and the screen will not have the smartphone shiny-ness
 - Put a sturdy case on it so the hardware lasts, and get a bright case or put bright tape on the case so you do not lose it
-- Set an alarm or calendar event in your phone to check things like email, bank, etc. on your computer, however often you need to check them
+- Set an alarm or calendar event in your phone to check things like email, bank, etc. on your computer, for however often you need to check them
+- Go outside to see what the weather is
 - Bandcamp (music) and Libro.fm (audiobooks) are good for buying audio files you actually own and can listen to without installing apps - you just load them onto the phone's filesystem
-- Aegis + hardware key cover virtually all 2fa needs. Just one or the other will still cover like 90%
+- Aegis app + hardware key cover virtually all 2fa needs. Just one or the other will still cover like 90%

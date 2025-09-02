@@ -13,41 +13,66 @@ Scripts, and resources used by those scripts to do what it does (see "What it do
 - A fork of LineageOS (it builds the official, up-to-date LineageOS, with modifications being made at build time)
 
 ## What it does
-- Builds the system image without the default browser *or* the fallback browser
+- Builds the system image without any browser
 - Compiles with a custom hosts file so that your phone will "hard-block" any domains you choose
 - Optionally sets the phone to grayscale and night mode (blue light filter)
+- Bundles [Olauncher](https://github.com/tanujnotes/Olauncher) in as a "system app" and sets it as the default launcher
 - Pulls the most recent LineageOS updates and device-specific vendor updates from their official sources before building each time, so the phone stays up to date
 - Preserves all existing apps, settings, and other user data on phones that already have LineageOS installed
-- Does not include any app store or Google Play Services in the system image
+- Does not include any app store or Google Play Services in the system image (like official LineageOS)
 - Builds without the user-facing "Updater" so that you will not overwrite changes made to the operating system with OTA updates
 - After the modified LineageOS image is built and flashed to your phone, it auto-downloads and installs the Aurora Store temporarily from a reputable source (F-droid), waits for you to update or install any apps you need (like secure messaging, notes, and maps), then auto-uninstalls the store when you are done
 - For Pixel phones:
     - Replaces the default LineageOS camera app with the higher-quality Google Pixel camera app, without needing GApps, Google Play Services, or microG
     - Disables unnecessary machine learning-based apps that use excessive data and battery power (Android System Intelligence and Private Compute Services)
     - Option to selectively exclude certain Google/carrier software from the build by preventing their "blobs" from being extracted, such as the "OK Google" listening software and Verizon apps
-
-### Other benefits
 - No need for root access to make any of these changes
 - Your battery will last for days
 
-## Where to run
-- Yes: Linux
-- Maybe: macOS or WSL (possibly, may cause issues that need workarounds)
-- No: Windows (will not work)
+## Disclaimer
+- As of now, these scripts have only been tested on a Google Pixel 7a. While they are likely compatible with other Pixel models, I cannot guarantee this, and it is less certain for non-Pixel phones. In theory, the scripts are device-agnostic since the manufacturer and device are to be specified manually in config.sh, but this is **untested** and could have **destructive results**, or, more likely, simply fail before completing the build due to differences in build processes, file locations, etc.
+- At this point in time, I do *not* recommend trying to run these scripts for a phone that is not some sort of Google Pixel.
+
+## Prerequisites
+- *section needs improving!*
+- A computer running Unix/Linux (either natively or in a VM)
+  - ✅ Yes: Linux
+  - ⚠ Maybe: macOS or WSL (may require workarounds)
+  - ❌ No: Windows
+- At least 32GB RAM (adjust SWAP accordingly)
+- At least 300GB storage, either on your regular SSD or an external USB one
+- *Add note about temp EC2 to fulfill above reqs*
+- Have official LineageOS already installed on your phone
+  - Note: installing LineageOS for the first time will wipe your phone
+  - Guide at https://wiki.lineageos.org/devices/{your-device-code-name}/install/
+- Have followed the LineageOS "Build for {your-device-code-name}" guide on their wiki, up to the "Preparing the build environment" section, and have run "repo sync" at least once before
+  - Guide at https://wiki.lineageos.org/devices/{your-device-code-name}/build/
 
 ## Instructions
-  - TBA - section needs improving!
-  - git clone this repo
-  - cd miniageOS
-  - enter values in config-example.sh and rename or copy to config.sh in that same folder
-  - run chmod +x sync-mod-build.sh flash-customize.sh
-  - run ./sync-mod-build.sh
+  - *TBA - section needs improving!*
+  1. Clone this repo:  
+  ```bash
+  git clone https://github.com/ofdryads/miniageOS.git
+  cd miniageOS
+  ```
+  2. Configure:
+  - Enter the correct values in config-example.sh, then rename or copy config-example.sh to a file called "config.sh" in that same folder
+  - Put any and all domains you want to block in the hosts file at replace/hosts
+  3. Make the scripts executable: 
+  ```bash
+  chmod +x sync-mod-build.sh flash-customize.sh
+  ```
+  4. Run
+  ```bash
+  ./sync-mod-build.sh
+  ```
+  - run ./flash-customize.sh *(still need to test invoking this second script when the build finishes in the first script)*
 
 ## What things will *not* work when using a phone running this build?
 - Banking apps, Venmo, NFC/contactless pay (like Google Pay, Apple Pay, or Samsung Pay)
-- RCS messaging (not without significant configuration, and may not even work consistently then). Regular SMS, most messaging apps, and iMessage-via-Mac services *will* work.
-- Apple Music official client
-- *(The points above apply to any phone with an unlocked bootloader, including ones running official LineageOS builds. It even applies to many other custom ROMs that allow re-locking the bootloader)*
+- RCS messaging
+  - However, regular SMS, most messaging apps (Signal, WhatApp), and iMessage-via-Mac services (BlueBubbles) *will* work just fine
+- *(The points above apply to any phone with an unlocked bootloader, including ones running official LineageOS builds)*
 - Opening links (URL or QR code) in a browser will not work, since there is no browser to open the links.
 
 ## Important note

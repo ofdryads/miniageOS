@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source "$script_in_here/config.sh"
+
 # if not already in this directory, change to the build output directory
 cd "$LINEAGE_ROOT/out/target/product/$CODENAME"
 
@@ -22,7 +24,7 @@ fi
 
 fastboot reboot recovery
 
-read -p "Go to Apply Update -> Apply from ADB in the recovery menu then hit enter: "
+read -p "In the phone recovery menu (where you should be now), go to 'Apply Update' -> 'Apply from ADB', then hit enter: "
 
 # Look for the zip file just made from build then sideload it
 TODAY=$(date +"%Y%m%d")
@@ -32,7 +34,7 @@ if [ -n "$dumb_build" ]; then
   echo "'Dirty flashing' the new dumb image..."
   adb sideload "$dumb_build"
 else
-  echo "Build output not found"
+  echo "Build output zip file not found"
   exit 1
 fi
 
@@ -54,7 +56,10 @@ if [[ "$NIGHT_MODE" ]]; then
 fi
 
 echo "Downloading latest Aurora Store APK from f-droid.org for TEMPORARY installation..."
-curl -s 'https://f-droid.org/en/packages/com.aurora.store/' | grep -oP 'https://f-droid.org/repo/com\.aurora\.store[^"]+\.apk' | head -1 | xargs -I {} wget -O aurora-store-latest.apk {}
+curl -s 'https://f-droid.org/en/packages/com.aurora.store/' \
+  | grep -oP 'https://f-droid.org/repo/com\.aurora\.store[^"]+\.apk' \
+  | head -1 \
+  | xargs -I {} wget -O aurora-store-latest.apk {}
 
 echo "Temporarily installing the Aurora Store on your phone..."
 adb install aurora-store-latest.apk
@@ -71,7 +76,7 @@ echo "Uninstalling the Aurora Store app from your phone..."
 adb shell am force-stop com.aurora.store
 adb uninstall com.aurora.store
 
-  # NOTE: with my edited proprietary-files.txt, com.google.android.as is not part of the system image anyways
+# NOTE: with my edited proprietary-files.txt, com.google.android.as is not part of the system image anyways
 if [[ "$IS_PIXEL" ]]; then
   echo "Disabling some unnecessary Google programs on the phone..."
   adb shell pm disable-user --user 0 com.google.android.as # Android System Intelligence
@@ -79,7 +84,7 @@ if [[ "$IS_PIXEL" ]]; then
 fi
 
 # disable built-in lineageOS camera - leave it installed on the phone as a backup
-# install Pixel camera
+# install Google's Pixel camera app, where path to apk is provided by user in config.sh
 if [[ "$IS_PIXEL" && "$GOOGLE_PIXEL_CAMERA" ]]; then
   adb shell pm disable-user --user 0 org.lineageos.aperture
   adb install $PIXEL_CAMERA_APK 
