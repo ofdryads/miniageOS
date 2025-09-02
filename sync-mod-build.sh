@@ -18,18 +18,18 @@ EOF
 read -rp "Continue? (y/n): " yn
 [[ $yn =~ ^[Yy]$ ]] || { echo "Exiting."; exit 1; }
 
-script_in_here="$(dirname "$0")" # folder where the dumbphone scripts and files live
+script_in_here="$(dirname "$0")" # project folder root
 
-exec > >(tee -a build.log) 2>&1 # log to this file
+exec > >(tee -a build.log) 2>&1 # log progress/errors to this file
 
-if [ -z "$script_in_here/config.sh" ]; then
+if [ ! -f "$script_in_here/config.sh" ]; then
     echo "No file named config.sh found in this project's root folder - you may still need to rename or copy config-example.sh to config.sh (after entering the right values)"
     exit 1
 fi
 
-source "$script_in_here/config.sh" # load variables that will be used to differentially execute commands
+source "$script_in_here/config.sh" # load config variables used to differentially execute commands
 
-# early issue checks to exit early
+# several early checks for issues to exit early
 if ! command -v adb &> /dev/null; then
     echo "Error: adb not installed or not found"
     exit 1
@@ -42,6 +42,7 @@ fi
 
 if [ -z "$OFFICIAL_ZIP" ]; then
     echo "Error: OFFICIAL_ZIP (path to lineageos official release zip) is not set in config.sh"
+    echo "The device's proprietary blobs will not be extracted... exiting"
     exit 1
 fi
 
@@ -54,9 +55,8 @@ source build/envsetup.sh
 croot || { echo "Exiting..."; exit 1; }
 
 echo "Running device-specific prep before building..."
-# even for devices where this will fail without proprietary blobs, it needs to run in order to populate lineage/device w/ the manufacturer and device
+# even for devices where this will fail without proprietary blobs, it needs to run in order to populate lineage/device w/ the manufacturer and device folders
 breakfast "$CODENAME"
-
 
 if [ ! -d "device/$MANUFACTURER/$CODENAME" ]; then
     echo "Expected path to device folder not found, exiting..."
@@ -66,7 +66,7 @@ fi
 cd device/"$MANUFACTURER"/"$CODENAME"
 
 # take the proprietary things to be included and remove problematic/unwanted ones 
-# DO NOT DO THIS CARELESSLY
+# DO NOT DO THIS CARELESSLY, brick risk if the wrong things are removed from the file
 if [[ $IS_PIXEL && $TWEAK_BLOBS ]]; then
     echo "Searching device folder for proprietary-files.txt..."
 
@@ -86,7 +86,6 @@ if [[ $IS_PIXEL && $TWEAK_BLOBS ]]; then
     cp "$script_in_here/replace/proprietary-files.txt" "$blobs_txt"
 fi
 
-# extract proprietary blobs, or overwrite previous blobs with updated ones
 echo "Extracting the latest proprietary blobs for your device from the official LOS build..."
 
 # remove past blobs for clean slate
@@ -97,8 +96,16 @@ else
     echo "Did not find device directory, skipping delete"
 fi
 
-# TODO pull the latest LOS nightly signed zip instead of having path in config
-./extract-files.py "$OFFICIAL_ZIP"
+# NOTE: it is NOT always a python script for all devices and is not always in this pwd (device/"$MANUFACTURER"/"$CODENAME")
+# for some devices it is a shell script. 
+# need to accomodate for this, or the build will fail for all where extract script is not named this, and in this location
+if [ ! -x "./extract-files.py" ]; then
+    echo "Extract-files.py not found or not executable. Proprietary blobs cannot be extracted. Exiting..."
+    exit 1
+fi
+
+# TODO pull the latest LOS nightly signed zip for the device instead of having path to downloaded zip in config
+./extract-files.py "$OFFICIAL_ZIP" # blob extract script
 
 # for phones where it didnt work the first time bc it needed the proprietary blobs first (no harm in running twice either way)
 breakfast "$CODENAME"
@@ -125,6 +132,8 @@ fi
 echo "Re-syncing repo to apply the dumbphone manifest changes to the source code..."
 repo sync
 
+#-----THIS SECTION HERE IS WHERE ALL PREBUILD SYSTEM CUSTOMIZATION that diverges from official LOS SHOULD HAPPEN-----#
+
 if [ -f "$HOSTS" ]; then
     cp "$HOSTS" "$LINEAGE_ROOT/system/core/rootdir/etc/hosts"
     echo "Replaced LineageOS hosts file with your modified version."
@@ -133,13 +142,37 @@ else
     echo "Error: Custom hosts file not found - did you move it/rename it/change the HOSTS value in config.sh?"
 fi
 
-# Nerf the saved searches in settings by removing DB stuff and leaving skeleton
-# have it fail gracefully and continue building if the file structure changes somehow
-# confirmed this behaves as expected when file swapped
+# Disables saving past searches in settings
 if [[ "${DISABLE_SETTINGS_SEARCHES,,}" == "true" ]] && [ -f "$PATH_TO_ORIGINAL" ]; then
     cp "$NO_SETTINGS_SEARCH_FILE" "$PATH_TO_ORIGINAL"
     echo "Disabled saving past searches in settings"
 fi
+
+if [[ "${OLAUNCHER,,}" == "true" ]]; then
+    echo "Downloading latest version of Olauncher..."
+    # non-"landscape" version olauncher APK
+    curl -s https://api.github.com/repos/tanujnotes/Olauncher/releases/latest \
+        | grep "browser_download_url" \
+        | grep -i "Olauncher-v.*\.apk" \
+        | grep -v "\-L" \
+        | head -n1 \
+        | sed -E 's/.*"([^"]+)".*/\1/' \
+        | xargs -r wget -O olauncher-latest.apk
+
+    # start w/ clean new app directory
+    if [ -d "$LINEAGE_ROOT/packages/apps/Olauncher" ]; then
+        rm -rf "$LINEAGE_ROOT/packages/apps/Olauncher"
+    fi
+    mkdir -p "$LINEAGE_ROOT/packages/apps/Olauncher"
+
+    if [ -f "olauncher-latest.apk" ]; then
+        mv olauncher-latest.apk "$LINEAGE_ROOT/packages/apps/Olauncher/"
+    else
+        echo "Failed to download Olauncher APK, it will not be included in the build"
+    fi
+fi
+
+#----- END SECTION -----#
 
 echo "Building the dumb LineageOS image..."
 croot
