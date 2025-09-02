@@ -16,7 +16,7 @@ Scripts, and resources used by those scripts to do what it does (see "What it do
 - Builds the system image without any browser
 - Compiles with a custom hosts file so that your phone will "hard-block" any domains you choose
 - Optionally sets the phone to grayscale and night mode (blue light filter)
-- Bundles [Olauncher](https://github.com/tanujnotes/Olauncher) in as a "system app" and sets it as the default launcher
+- Bundles [Olauncher](https://github.com/tanujnotes/Olauncher) in as a "system app" and sets it as the default launcher (*in progress*)
 - Pulls the most recent LineageOS updates and device-specific vendor updates from their official sources before building each time, so the phone stays up to date
 - Preserves all existing apps, settings, and other user data on phones that already have LineageOS installed
 - Does not include any app store or Google Play Services in the system image (like official LineageOS)
