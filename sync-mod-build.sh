@@ -18,7 +18,7 @@ EOF
 read -rp "Continue? (y/n): " yn
 [[ $yn =~ ^[Yy]$ ]] || { echo "Exiting."; exit 1; }
 
-script_in_here="$(dirname "$0")" # project folder root
+script_in_here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 exec > >(tee -a build.log) 2>&1 # log progress/errors to this file
 
@@ -27,7 +27,7 @@ if [ ! -f "$script_in_here/config.sh" ]; then
     exit 1
 fi
 
-source "$script_in_here/config.sh" # load config variables used to differentially execute commands
+source "$script_in_here/config.sh" || exit # load config variables used to differentially execute commands
 
 # several early checks for issues to exit early
 if ! command -v adb &> /dev/null; then
@@ -46,13 +46,15 @@ if [ -z "$OFFICIAL_ZIP" ]; then
     exit 1
 fi
 
-cd "$LINEAGE_ROOT"
+cd "$LINEAGE_ROOT" || exit
 echo "Re-syncing repository to get any updates..."
 repo sync --force-sync
 
 # set up the build environment
 source build/envsetup.sh
-croot || { echo "Exiting..."; exit 1; }
+croot || { echo "Build environment could not be set up, exiting..."; exit 1; }
+
+export NINJA_ARGS="-j4" # prevent ninja/soong crashout by limiting jobs
 
 echo "Running device-specific prep before building..."
 # even for devices where this will fail without proprietary blobs, it needs to run in order to populate lineage/device w/ the manufacturer and device folders
@@ -63,27 +65,27 @@ if [ ! -d "device/$MANUFACTURER/$CODENAME" ]; then
     exit 1
 fi
 
-cd device/"$MANUFACTURER"/"$CODENAME"
-
 # take the proprietary things to be included and remove problematic/unwanted ones 
 # DO NOT DO THIS CARELESSLY, brick risk if the wrong things are removed from the file
 if [[ $IS_PIXEL && $TWEAK_BLOBS ]]; then
     echo "Searching device folder for proprietary-files.txt..."
 
-    #FIX THIS
     blobs_txt=$(find "$LINEAGE_ROOT/device/$MANUFACTURER/$CODENAME" -type f -name "proprietary-files.txt" | head -n1)
     
     if [ -z "$blobs_txt" ]; then
-        echo "Error: Could not find proprietary-files.txt under device/$MANUFACTURER/$CODENAME"
+        echo "Error: Could not find proprietary-files.txt under ${LINEAGE_ROOT}/device/${MANUFACTURER}/${CODENAME}"
         exit 1
     fi
 
-    cp "$blobs_txt" "$script_in_here/replace/proprietary-files.txt"
-
-    echo "Edit and save the file at miniageos/replace/proprietary-files.txt, commenting out or deleting any unnecessary blobs."
-    read -rp "Press Enter when done to continue..."
-
-    cp "$script_in_here/replace/proprietary-files.txt" "$blobs_txt"
+    if [ -d "$script_in_here/replace" ]; then
+        temp_location="$script_in_here/replace/proprietary-files.txt"
+        cp "$blobs_txt" "$temp_location"
+        echo "Edit and save the file at miniageos/replace/proprietary-files.txt, commenting out or deleting any unnecessary blobs."
+        read -rp "Press Enter when done to continue..."
+        cp "$temp_location" "$blobs_txt"
+    else
+        echo "Replace folder not found, cannot use files in it"
+    fi
 fi
 
 echo "Extracting the latest proprietary blobs for your device from the official LOS build..."
@@ -96,16 +98,16 @@ else
     echo "Did not find device directory, skipping delete"
 fi
 
-# NOTE: it is NOT always a python script for all devices and is not always in this pwd (device/"$MANUFACTURER"/"$CODENAME")
-# for some devices it is a shell script. 
-# need to accomodate for this, or the build will fail for all where extract script is not named this, and in this location
-if [ ! -x "./extract-files.py" ]; then
+# find the extract script (could be .py or .sh)
+extract_script=$(find "$LINEAGE_ROOT/device/$MANUFACTURER/$CODENAME" -type f -name "extract-files*" | head -n1)
+
+if [ -x "$extract_script" ]; then
+    echo "Extracting proprietary blobs..."
+    "$extract_script" "$OFFICIAL_ZIP"
+else
     echo "Extract-files.py not found or not executable. Proprietary blobs cannot be extracted. Exiting..."
     exit 1
 fi
-
-# TODO pull the latest LOS nightly signed zip for the device instead of having path to downloaded zip in config
-./extract-files.py "$OFFICIAL_ZIP" # blob extract script
 
 # for phones where it didnt work the first time bc it needed the proprietary blobs first (no harm in running twice either way)
 breakfast "$CODENAME"
@@ -144,7 +146,7 @@ fi
 
 # Disables saving past searches in settings
 if [[ "${DISABLE_SETTINGS_SEARCHES,,}" == "true" ]] && [ -f "$PATH_TO_ORIGINAL" ]; then
-    cp "$NO_SETTINGS_SEARCH_FILE" "$PATH_TO_ORIGINAL"
+    cp "$script_in_here/replace/NoSavedSettingsSearches.java" "$PATH_TO_ORIGINAL"
     echo "Disabled saving past searches in settings"
 fi
 
@@ -175,18 +177,10 @@ fi
 #----- END SECTION -----#
 
 echo "Building the dumb LineageOS image..."
-croot
 brunch "$CODENAME"
 
-cd $OUT # go to build output folder when done
+cd "$OUT" # go to build output folder when done
 
 if [[ "$(pwd)" == "$LINEAGE_ROOT/out/target/product/$CODENAME" ]]; then
     echo "DUMBPHONE: build process complete"
 fi
-
-# if [ -f "$script_in_here/flash-customize.sh" ]; then
-#    echo "Running flash and customization script..."
-#    source "$script_in_here/flash-customize.sh"
-#else
-#    echo "Flashing/customization script not found in root - flash build manually or run flash-customize.sh manually"
-#fi

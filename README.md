@@ -34,7 +34,6 @@ Scripts, and resources used by those scripts to do what it does (see "What it do
 - At this point in time, I do *not* recommend trying to run these scripts for a phone that is not some sort of Google Pixel.
 
 ## Prerequisites
-- *section needs improving!*
 - A computer running Unix/Linux (either natively or in a VM)
   - ✅ Yes: Linux
   - ⚠ Maybe: macOS or WSL (may require workarounds)
@@ -49,7 +48,6 @@ Scripts, and resources used by those scripts to do what it does (see "What it do
   - Guide at https://wiki.lineageos.org/devices/{your-device-code-name}/build/
 
 ## Instructions
-  - *TBA - section needs improving!*
   1. Clone this repo:  
   ```bash
   git clone https://github.com/ofdryads/miniageOS.git
@@ -66,7 +64,10 @@ Scripts, and resources used by those scripts to do what it does (see "What it do
   ```bash
   ./sync-mod-build.sh
   ```
-  - run ./flash-customize.sh *(still need to test invoking this second script when the build finishes in the first script)*
+  5. Once the build has completed, run:
+  ```bash
+  ./flash-customize.sh
+  ```
 
 ## What things will *not* work when using a phone running this build?
 - Banking apps, Venmo, NFC/contactless pay (like Google Pay, Apple Pay, or Samsung Pay)

@@ -10,9 +10,6 @@ LINEAGE_ROOT="" # the path to the directory where you ran 'repo init' and 'repo 
 # Some known manufacturer names: google, samsung, motorola, oneplus, fairphone, nokia
 MANUFACTURER=""
 
-#path to this project's root folder
-PROJECT_ROOT=""
-
 # will be referenced only if you are flashing the image on a date other than when it was built:
 # this should be the date the build was run, formatted like 20250812 for August 12, 2025 (example)
 FALLBACK_DATE=""
@@ -47,9 +44,9 @@ PIXEL_CAMERA_APK="" # path to apk for google pixel camera app
 TWEAK_BLOBS=false
 
 #Disable saved searches and suggestions of your past searches in Settings
-DISABLE_SETTINGS_SEARCHES=false # put true to disable, or false to save past searches (LOS normal behavior)
-NO_SETTINGS_SEARCH_FILE="$PROJECT_ROOT/replace/NoSavedSettingsSearches.java"
+DISABLE_SETTINGS_SEARCHES=true # put true to disable, or false to save past searches (LOS normal behavior)
 PATH_TO_ORIGINAL="$LINEAGE_ROOT/packages/apps/SettingsIntelligence/src/com/android/settings/intelligence/search/savedqueries/SavedQueryRecorder.java"
 
+THIS_FOLDER="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)" # not to be changed
 # path to custom hosts file - you don't need to change this unless you move the file or rename it
-HOSTS="$PROJECT_ROOT/replace/hosts"
+HOSTS="$THIS_FOLDER/replace/hosts"
