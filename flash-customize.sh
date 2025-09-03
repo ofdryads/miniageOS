@@ -1,9 +1,10 @@
 #!/bin/bash
 
+script_in_here="$(dirname "$0")" # project folder root
 source "$script_in_here/config.sh"
 
 # if not already in this directory, change to the build output directory
-cd "$LINEAGE_ROOT/out/target/product/$CODENAME"
+cd "$LINEAGE_ROOT/out/target/product/$CODENAME" || exit 1
 
 echo "Make sure your phone is plugged into the computer, and that USB debugging on this computer has been enabled and authorized (in developer settings)"
 echo ""
@@ -14,7 +15,7 @@ echo "If you see your device listed above, that is good and you can continue"
 echo ""
 echo "If you do not see any device listed, do NOT press Enter yet. Leave this terminal window open, troubleshoot, then come back and when running 'adb devices' in another terminal window shows your device and says 'device', not 'unauthorized'."
 echo ""
-read -p "Press Enter to continue to flash the new system image and recovery:"
+read -rp "Press Enter to continue to flash the new system image and recovery:"
 
 adb -d reboot bootloader
 
@@ -24,21 +25,25 @@ fi
 
 fastboot reboot recovery
 
-read -p "In the phone recovery menu (where you should be now), go to 'Apply Update' -> 'Apply from ADB', then hit enter: "
+read -rp "In the phone recovery menu (where you should be now), go to 'Apply Update' -> 'Apply from ADB', then hit enter: "
 
-# Look for the zip file just made from build then sideload it
+# Look for the zip file just made from build, then sideload it
 TODAY=$(date +"%Y%m%d")
-dumb_build=$(grep -l "$TODAY" *.zip 2>/dev/null)
+dumb_build=$(grep -l "$TODAY" -- ./*.zip 2>/dev/null)
+
+#TODO - the build might have finished on a day other than when this script is run --> account for that
 
 if [ -n "$dumb_build" ]; then
   echo "'Dirty flashing' the new dumb image..."
   adb sideload "$dumb_build"
 else
   echo "Build output zip file not found"
+  # Here should check for a fallback manually entered date if zip  with today's date is not found
+  # if neither are found, then exit
   exit 1
 fi
 
-read -p "Is the phone rebooted and unlocked now? Hit Enter when it is"
+read -rp "Is the phone rebooted and unlocked now? Hit Enter when it is"
 
 # Gray phone
 if [[ "$GRAYSCALE" ]]; then
@@ -55,6 +60,18 @@ if [[ "$NIGHT_MODE" ]]; then
   adb shell settings put secure night_display_activated 1
 fi
 
+if [[ "$BIG_FONT_DISPLAY" ]]; then
+  adb shell settings put system font_scale "$FONT_MULTIPLIER"
+  echo "Increased system font size by ${FONT_MULTIPLIER}"
+
+  PHYSICAL_DENSITY=$(adb shell wm density | grep -o 'Physical density: [0-9]*' | awk '{print $3}') # get only the native physical density, not the current override value
+  BIG_DISPLAY_FLOAT=$(echo "$PHYSICAL_DENSITY * $DISPLAY_MULTIPLIER" | bc) # apply multiplier
+  BIG_DISPLAY=${BIG_DISPLAY_FLOAT%.*} #then cast as int
+
+  adb shell wm density "$BIG_DISPLAY"
+  echo "Increased display size by ${DISPLAY_MULTIPLIER}"
+fi
+
 echo "Downloading latest Aurora Store APK from f-droid.org for TEMPORARY installation..."
 curl -s 'https://f-droid.org/en/packages/com.aurora.store/' \
   | grep -oP 'https://f-droid.org/repo/com\.aurora\.store[^"]+\.apk' \
@@ -65,8 +82,8 @@ echo "Temporarily installing the Aurora Store on your phone..."
 adb install aurora-store-latest.apk
 
 echo "Update any third party apps you have installed or add any apps you need (e.g. maps, secure messaging, notes, minimalist launcher)"
-echo "Warning: Some apps like Venmo, bank apps, and many (but not all) 2FA apps will not work with an unlocked bootloader."
-read -p "Press Enter when you are done installing/updating what you need: "
+echo "Warning: Some apps like Venmo, bank apps, and certain Google apps will not work."
+read -rp "Press Enter when you are done installing/updating what you need: "
 
 # Clean up
 echo "Deleting the Aurora Store .apk from your computer..."
@@ -87,7 +104,7 @@ fi
 # install Google's Pixel camera app, where path to apk is provided by user in config.sh
 if [[ "$IS_PIXEL" && "$GOOGLE_PIXEL_CAMERA" ]]; then
   adb shell pm disable-user --user 0 org.lineageos.aperture
-  adb install $PIXEL_CAMERA_APK 
+  adb install "$PIXEL_CAMERA_APK" 
 fi
 
 echo "Phone is dumber now!"
