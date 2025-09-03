@@ -10,6 +10,13 @@ LINEAGE_ROOT="" # the path to the directory where you ran 'repo init' and 'repo 
 # Some known manufacturer names: google, samsung, motorola, oneplus, fairphone, nokia
 MANUFACTURER=""
 
+#path to this project's root folder
+PROJECT_ROOT=""
+
+# will be referenced only if you are flashing the image on a date other than when it was built:
+# this should be the date the build was run, formatted like 20250812 for August 12, 2025 (example)
+FALLBACK_DATE=""
+
 # if these are already enabled or you don't want them, put false
 GRAYSCALE=true   # put true or false
 NIGHT_MODE=true  # put true or false
@@ -17,8 +24,14 @@ NIGHT_MODE=true  # put true or false
 # install olauncher?
 OLAUNCHER=true
 
+# Scale the system font/display elements up to make everything bigger?
+BIG_FONT_DISPLAY=true
+# Below values applied if BIG_FONT_DISPLAY=true
+FONT_MULTIPLIER=1.5
+DISPLAY_MULTIPLIER=1.1 # ultimately results in the font being scaled to 1.65 from baseline, since these values stack
+
 # path to the downloaded latest official lineageos release from https://download.lineageos.org/devices/{CODENAME}/builds
-# used for blobs
+# used for extracting proprietary blobs
 OFFICIAL_ZIP=""
 
 # Is the phone a Google Pixel?
@@ -35,8 +48,8 @@ TWEAK_BLOBS=false
 
 #Disable saved searches and suggestions of your past searches in Settings
 DISABLE_SETTINGS_SEARCHES=false # put true to disable, or false to save past searches (LOS normal behavior)
-NO_SETTINGS_SEARCH_FILE="./replace/NoSavedSettingsSearches.java"
+NO_SETTINGS_SEARCH_FILE="$PROJECT_ROOT/replace/NoSavedSettingsSearches.java"
 PATH_TO_ORIGINAL="$LINEAGE_ROOT/packages/apps/SettingsIntelligence/src/com/android/settings/intelligence/search/savedqueries/SavedQueryRecorder.java"
 
 # path to custom hosts file - you don't need to change this unless you move the file or rename it
-HOSTS="./replace/hosts"
+HOSTS="$PROJECT_ROOT/replace/hosts"
