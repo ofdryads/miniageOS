@@ -1,9 +1,9 @@
 ## Unsolicited Phone Tips
 
-- Install Olauncher, or make the text & icons very big in Settings if using the default launcher
 - Get a 5GB/month phone plan - you probably will not even use this much, or anywhere close to it
 - Disable network access in Settings for any apps that do not logically need internet (camera, notes if saved locally, etc.)
 - Likewise for disabling "Allow in background" for non-notification apps
+- Turn on "Bold text" in "Display -> Display size and text" 
 - Disable animations in accessibility settings. You will be surprised how much this rips away the illusion that the phone is a vast "place" you can "navigate". 
 - Put a matte cover on your screen - it helps with glare outside and the screen will not have the smartphone shiny-ness
 - Put a sturdy case on it so the hardware lasts, and get a bright case or put bright tape on the case so you do not lose it
