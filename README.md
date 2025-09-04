@@ -38,7 +38,7 @@ Scripts, and resources used by those scripts to do what it does (see "What it do
   - ✅ Yes: Linux
   - ⚠ Maybe: macOS or WSL (may require workarounds)
   - ❌ No: Windows
-- At least 32GB RAM (adjust SWAP accordingly)
+- At least 16GB RAM (adjust SWAP accordingly)
 - At least 300GB storage, either on your regular SSD or an external USB one
 - *Add note about temp EC2 to fulfill above reqs*
 - Have official LineageOS already installed on your phone
