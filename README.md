@@ -7,6 +7,8 @@ Create a stripped-down "dumbphone" version of LineageOS for your Android phone w
   <img src="https://github.com/user-attachments/assets/610abed4-f7a7-40e7-82b7-b2491f2bd7f1" alt="app-list" width="50%" />
 </p>
 
+*<p align="center">Launcher shown is Olauncher</p>*
+
 ## What is this?
 Scripts, and resources used by those scripts to do what it does (see "What it does")
 
