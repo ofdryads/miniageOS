@@ -20,18 +20,22 @@ read -r _
 
 adb -d reboot bootloader
 
-if [[ "$IS_PIXEL,,}" == "true" ]]; then
+if [[ "${IS_PIXEL,,}" == "true" ]]; then
   fastboot flash vendor_boot vendor_boot.img
 fi
 
 fastboot reboot recovery
-sleep 5 # 5 seconds before next prompt
+sleep 5 # before next prompt
 
 echo "In the phone recovery menu (where you should be now - it might take a second), go to 'Apply Update' -> 'Apply from ADB', then hit enter:"
 read -r _
 
-# identify most recent build by searching output folder for zip files w/ names containing "lineage" and sorting by most recently modified
-dumb_build=$(ls -t "$output_folder"/*.zip| grep "lineage" | head -n 1)
+# the most recently modified zip file ending in "UNOFFICIAL-{device name}" (OS image zip format)
+dumb_build=$(find "$output_folder" -maxdepth 1 -type f -iname "*UNOFFICIAL-${CODENAME}*.zip" \
+    -exec stat --format '%Y %n' {} + 2>/dev/null \
+    | sort -nr \
+    | head -n 1 \
+    | cut -d' ' -f2-)
 
 if [ -n "$dumb_build" ]; then
   echo "'Dirty flashing' the new dumb image..."
@@ -44,27 +48,19 @@ fi
 echo "Is the phone rebooted and unlocked now? Hit Enter when it is."
 read -r _
 
-# set olauncher as default launcher
-if [[ "${OLAUNCHER,,}" == "true" ]]; then
-  if adb shell pm list packages | grep -q "olauncher"; then
-    adb shell pm grant com.tanujnotes.olauncher android.permission.SET_PREFERRED_APPLICATIONS
-    adb shell cmd package set-home-activity com.tanujnotes.olauncher/.MainActivity
-  fi
-fi
-
 # Gray phone
-if [[ "$GRAYSCALE,,}" == "true" ]]; then
+if [[ "${GRAYSCALE,,}" == "true" ]]; then
   echo "Turning your phone gray..."
   adb shell settings put secure accessibility_display_daltonizer_enabled 1
   adb shell settings put secure accessibility_display_daltonizer 0
 fi
 
-if [[ "$NIGHT_MODE,,}" == "true" ]]; then
+if [[ "${NIGHT_MODE,,}" == "true" ]]; then
   echo "Turning on night mode..."
   adb shell settings put secure night_display_activated 1
 fi
 
-if [[ "$BIG_FONT_DISPLAY,,}" == "true" ]]; then
+if [[ "${BIG_FONT_DISPLAY,,}" == "true" ]]; then
   adb shell settings put system font_scale "$FONT_MULTIPLIER"
   echo "Increased system font size by ${FONT_MULTIPLIER}"
 
@@ -96,7 +92,7 @@ echo "Uninstalling the Aurora Store app from your phone..."
 adb shell am force-stop com.aurora.store
 adb uninstall com.aurora.store
 
-if [[ "$IS_PIXEL,,}" == "true" ]]; then
+if [[ "${IS_PIXEL,,}" == "true" ]]; then
   echo "Disabling some unnecessary Google programs on the phone..."
   if adb shell pm list packages | grep -q "com.google.android.as"; then
     adb shell pm disable-user --user 0 com.google.android.as # Android System Intelligence
@@ -112,7 +108,7 @@ fi
 
 #TODO since the APK is user-provided it is not actually bound to pixel phones
 # make it a replace camera option more generally
-if [[ "$IS_PIXEL,,}" == "true" && "$GOOGLE_PIXEL_CAMERA,,}" == "true" ]]; then
+if [[ "${IS_PIXEL,,}" == "true" && "${GOOGLE_PIXEL_CAMERA,,}" == "true" ]]; then
   if [[ -n "$PIXEL_CAMERA_APK" && "$PIXEL_CAMERA_APK" == *.apk ]]; then
     adb shell pm disable-user --user 0 org.lineageos.aperture
     adb install "$PIXEL_CAMERA_APK"
