@@ -1,5 +1,6 @@
 ## Unsolicited Phone Tips
 
+- Use Olauncher
 - Get a 5GB/month phone plan - you probably will not even use this much, or anywhere close to it
 - Disable network access in Settings for any apps that do not logically need internet (camera, notes if saved locally, etc.)
 - Likewise for disabling "Allow in background" for non-notification apps

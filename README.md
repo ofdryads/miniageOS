@@ -29,7 +29,6 @@ Scripts, and resources used by those scripts to do what it does (see "What it do
 - Pulls the most recent LineageOS updates and device-specific vendor updates from their official sources before building each time, so the phone stays up to date
 - Preserves all existing apps, settings, and other user data on phones that already have LineageOS installed
 - Does not include any app store or Google Play Services in the system image (like official LineageOS)
-- Installs [Olauncher](https://github.com/tanujnotes/Olauncher) and sets it as the default launcher
 - Builds without the user-facing "Updater" so that you will not overwrite changes made to the operating system with OTA updates
 - After the modified LineageOS image is built and flashed to your phone, it auto-downloads and installs the Aurora Store temporarily from a reputable source (F-droid), waits for you to update or install any apps you need (like secure messaging, notes, and maps), then auto-uninstalls the store when you are done
 - For Pixel phones:
