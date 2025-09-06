@@ -25,11 +25,12 @@ Scripts, and resources used by those scripts to do what it does (see "What it do
 
 - Builds the system image without any browser
 - Compiles with a custom hosts file so that your phone will "hard-block" any domains you choose
-- Optionally sets the phone to grayscale and night mode (blue light filter)
+- Sets the phone to grayscale and night mode (blue light filter)
+- Applies a magnifier to text and UI elements on the phone
+- Builds without the user-facing "Updater" so that you will not overwrite changes made to the operating system with OTA updates
+- Does not include any app store or Google Play Services in the system image (like official LineageOS)
 - Pulls the most recent LineageOS updates and device-specific vendor updates from their official sources before building each time, so the phone stays up to date
 - Preserves all existing apps, settings, and other user data on phones that already have LineageOS installed
-- Does not include any app store or Google Play Services in the system image (like official LineageOS)
-- Builds without the user-facing "Updater" so that you will not overwrite changes made to the operating system with OTA updates
 - After the modified LineageOS image is built and flashed to your phone, it auto-downloads and installs the Aurora Store temporarily from a reputable source (F-droid), waits for you to update or install any apps you need (like secure messaging, notes, and maps), then auto-uninstalls the store when you are done
 - For Pixel phones:
   - Replaces the default LineageOS camera app with the higher-quality Google Pixel camera app, without needing GApps, Google Play Services, or microG
@@ -40,7 +41,7 @@ Scripts, and resources used by those scripts to do what it does (see "What it do
 
 ## Disclaimer
 
-- As of now, these scripts have only been tested on a Google Pixel 7a. While they are likely compatible with other Pixel models, I cannot guarantee this, and it is less certain for non-Pixel phones. In theory, the scripts are device-agnostic since the manufacturer and device are to be specified manually in config.sh, but this is **untested** and could have **destructive results**, or, more likely, simply fail before completing the build due to differences in build processes, file locations, etc.
+- As of now, these scripts have only been tested on a Google Pixel 7a. While they are likely compatible with other Pixel models, I cannot guarantee this, and it is less certain for non-Pixel phones. In theory, the scripts are device-agnostic since the manufacturer and device are specified manually in config.sh, but this is **untested** and could have **destructive results**, or, more likely, simply fail before completing the build due to differences in build processes, file locations, etc.
 - At this point in time, I do _not_ recommend trying to run these scripts for a phone that is not some sort of Google Pixel.
 
 ## Prerequisites

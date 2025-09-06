@@ -35,6 +35,7 @@ IS_PIXEL=false
 
 # If you have a Pixel, this will install the Google Pixel Camera and disable the LineageOS default camera (Aperture)
 GOOGLE_PIXEL_CAMERA=false
+# https://www.apkmirror.com/apk/google-inc/camera/ - you probably want arm64-v8a / nodpi / Android 15+ variant
 PIXEL_CAMERA_APK="" # path to apk for google pixel camera app
 
 # Option to tweak which things will be included in the proprietary blob extraction step

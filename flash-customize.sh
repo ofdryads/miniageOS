@@ -21,11 +21,11 @@ read -r _
 adb -d reboot bootloader
 
 if [[ "${IS_PIXEL,,}" == "true" ]]; then
-  fastboot flash vendor_boot vendor_boot.img
+  fastboot flash vendor_boot ${output_folder}/vendor_boot.img
 fi
 
 fastboot reboot recovery
-sleep 5 # before next prompt
+sleep 7 # before next prompt
 
 echo "In the phone recovery menu (where you should be now - it might take a second), go to 'Apply Update' -> 'Apply from ADB', then hit enter:"
 read -r _
@@ -106,8 +106,8 @@ fi
 # disable built-in lineageOS camera - leave it installed on the phone as a backup
 # install Google's Pixel camera app, where path to apk is provided by user in config.sh
 
-#TODO since the APK is user-provided it is not actually bound to pixel phones
-# make it a replace camera option more generally
+#TODO since the APK is user-provided, it is not actually bound to pixel phones
+# make it a "replace default camera" option more generally
 if [[ "${IS_PIXEL,,}" == "true" && "${GOOGLE_PIXEL_CAMERA,,}" == "true" ]]; then
   if [[ -n "$PIXEL_CAMERA_APK" && "$PIXEL_CAMERA_APK" == *.apk ]]; then
     adb shell pm disable-user --user 0 org.lineageos.aperture
