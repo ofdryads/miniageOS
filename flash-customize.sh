@@ -20,57 +20,56 @@ read -r _
 
 adb -d reboot bootloader
 
-if [[ "$IS_PIXEL" ]]; then
+if [[ "$IS_PIXEL,,}" == "true" ]]; then
   fastboot flash vendor_boot vendor_boot.img
 fi
 
 fastboot reboot recovery
+sleep 5 # 5 seconds before next prompt
 
 echo "In the phone recovery menu (where you should be now - it might take a second), go to 'Apply Update' -> 'Apply from ADB', then hit enter:"
 read -r _
 
-# Look for the zip file just made from build, then sideload it
-TODAY=$(date +"%Y%m%d")
-dumb_build=$(ls "$output_folder"/*"$TODAY"*.zip 2>/dev/null)
-
-#TODO - the build might have finished on a day other than when this script is run --> account for that
+# identify most recent build by searching output folder for zip files w/ names containing "lineage" and sorting by most recently modified
+dumb_build=$(ls -t "$output_folder"/*.zip| grep "lineage" | head -n 1)
 
 if [ -n "$dumb_build" ]; then
   echo "'Dirty flashing' the new dumb image..."
   adb sideload "$dumb_build"
 else
   echo "Build output zip file not found"
-  # Here should check for a fallback manually entered date if zip  with today's date is not found
-  # if neither are found, then exit
   exit 1
 fi
 
 echo "Is the phone rebooted and unlocked now? Hit Enter when it is."
 read -r _
 
+# set olauncher as default launcher
+if [[ "${OLAUNCHER,,}" == "true" ]]; then
+  if adb shell pm list packages | grep -q "olauncher"; then
+    adb shell pm grant com.tanujnotes.olauncher android.permission.SET_PREFERRED_APPLICATIONS
+    adb shell cmd package set-home-activity com.tanujnotes.olauncher/.MainActivity
+  fi
+fi
+
 # Gray phone
-if [[ "$GRAYSCALE" ]]; then
-# TODO check - adb shell settings get secure accessibility_display_daltonizer_enabled
-# check - adb shell settings get secure accessibility_display_daltonizer
+if [[ "$GRAYSCALE,,}" == "true" ]]; then
   echo "Turning your phone gray..."
   adb shell settings put secure accessibility_display_daltonizer_enabled 1
   adb shell settings put secure accessibility_display_daltonizer 0
 fi
 
-if [[ "$NIGHT_MODE" ]]; then
-# TODO Check: adb shell settings get secure night_display_activated
+if [[ "$NIGHT_MODE,,}" == "true" ]]; then
   echo "Turning on night mode..."
   adb shell settings put secure night_display_activated 1
 fi
 
-if [[ "$BIG_FONT_DISPLAY" ]]; then
+if [[ "$BIG_FONT_DISPLAY,,}" == "true" ]]; then
   adb shell settings put system font_scale "$FONT_MULTIPLIER"
   echo "Increased system font size by ${FONT_MULTIPLIER}"
 
   PHYSICAL_DENSITY=$(adb shell wm density | grep -o 'Physical density: [0-9]*' | awk '{print $3}') # get only the native physical density, not the current override value
-  BIG_DISPLAY_FLOAT=$(echo "$PHYSICAL_DENSITY * $DISPLAY_MULTIPLIER" | bc) # apply multiplier
-  BIG_DISPLAY=${BIG_DISPLAY_FLOAT%.*} #then cast as int
-
+  BIG_DISPLAY=$(echo "$PHYSICAL_DENSITY * $DISPLAY_MULTIPLIER" | bc | cut -d'.' -f1) # apply multiplier, then truncate to make int
   adb shell wm density "$BIG_DISPLAY"
   echo "Increased display size by ${DISPLAY_MULTIPLIER}"
 fi
@@ -89,7 +88,7 @@ echo "Warning: Some apps like Venmo, bank apps, and certain Google apps will not
 echo "Hit Enter when you are done installing/updating what you need:"
 read -r _
 
-# Clean up apk
+# Clean up downloaded apk from pc
 echo "Deleting the Aurora Store .apk from your computer..."
 rm -f aurora-store-latest.apk
 
@@ -97,19 +96,29 @@ echo "Uninstalling the Aurora Store app from your phone..."
 adb shell am force-stop com.aurora.store
 adb uninstall com.aurora.store
 
-# NOTE: with my edited proprietary-files.txt, com.google.android.as is not part of the system image anyways
-if [[ "$IS_PIXEL" ]]; then
+if [[ "$IS_PIXEL,,}" == "true" ]]; then
   echo "Disabling some unnecessary Google programs on the phone..."
-  #TODO check that these are installed
-  adb shell pm disable-user --user 0 com.google.android.as # Android System Intelligence
-  adb shell pm disable-user --user 0 com.google.android.as.oss # Private Compute Services
+  if adb shell pm list packages | grep -q "com.google.android.as"; then
+    adb shell pm disable-user --user 0 com.google.android.as # Android System Intelligence
+  fi
+
+  if adb shell pm list packages | grep -q "com.google.android.as.oss"; then
+    adb shell pm disable-user --user 0 com.google.android.as.oss # Private Compute Services
+  fi
 fi
 
 # disable built-in lineageOS camera - leave it installed on the phone as a backup
 # install Google's Pixel camera app, where path to apk is provided by user in config.sh
-if [[ "$IS_PIXEL" && "$GOOGLE_PIXEL_CAMERA" ]]; then
-  adb shell pm disable-user --user 0 org.lineageos.aperture
-  adb install "$PIXEL_CAMERA_APK" #TODO check for this string not being empty in config
+
+#TODO since the APK is user-provided it is not actually bound to pixel phones
+# make it a replace camera option more generally
+if [[ "$IS_PIXEL,,}" == "true" && "$GOOGLE_PIXEL_CAMERA,,}" == "true" ]]; then
+  if [[ -n "$PIXEL_CAMERA_APK" && "$PIXEL_CAMERA_APK" == *.apk ]]; then
+    adb shell pm disable-user --user 0 org.lineageos.aperture
+    adb install "$PIXEL_CAMERA_APK"
+  else
+    echo "The Pixel Camera APK was not found or the path was malformed"
+  fi
 fi
 
 echo "Phone is dumber now!"
