@@ -151,44 +151,9 @@ if [[ "${DISABLE_SETTINGS_SEARCHES,,}" == "true" ]] && [ -f "$PATH_TO_ORIGINAL" 
     echo "Disabled saving past searches in settings"
 fi
 
-if [[ "${OLAUNCHER,,}" == "true" ]]; then
-    echo "Downloading latest version of Olauncher..."
-    # non-"landscape" version olauncher APK
-    curl -s https://api.github.com/repos/tanujnotes/Olauncher/releases/latest \
-        | grep "browser_download_url" \
-        | grep -i "Olauncher-v.*\.apk" \
-        | grep -v "\-L" \
-        | head -n1 \
-        | sed -E 's/.*"([^"]+)".*/\1/' \
-        | xargs -r wget -O olauncher-latest.apk
-
-    # start w/ clean new app directory
-    if [ -d "$LINEAGE_ROOT/packages/apps/Olauncher" ]; then
-        rm -rf "$LINEAGE_ROOT/packages/apps/Olauncher"
-    fi
-    mkdir -p "$LINEAGE_ROOT/packages/apps/Olauncher"
-
-    if [ -f "olauncher-latest.apk" ]; then
-        echo "Olauncher APK downloaded successfully, moving it to app folder..."
-        mv olauncher-latest.apk "$LINEAGE_ROOT/packages/apps/Olauncher/"
-    else
-        echo "Failed to download Olauncher APK, it will not be included in the build"
-    fi
-
-    olauncher_in_mk=$(grep "Olauncher" "$LINEAGE_ROOT/Android.mk")
-    if [ -z "$olauncher_in_mk" ]; then
-        echo "    <application module='Olauncher'/>" >> "$LINEAGE_ROOT/Android.mk"
-        echo "Olauncher added to Android.mk"
-    fi
-fi
-
 #----- END SECTION -----#
 
 echo "Building the dumb LineageOS image..."
 brunch "$CODENAME"
 
 cd "$OUT" # go to build output folder when done
-
-if [[ "$(pwd)" == "$LINEAGE_ROOT/out/target/product/$CODENAME" ]]; then
-    echo "DUMBPHONE: build process complete"
-fi
