@@ -10,9 +10,8 @@ LINEAGE_ROOT="" # the path to the directory where you ran 'repo init' and 'repo 
 # Some known manufacturer names: google, samsung, motorola, oneplus, fairphone, nokia
 MANUFACTURER=""
 
-# will be referenced only if you are flashing the image on a date other than when it was built:
-# this should be the date the build was run, formatted like 20250812 for August 12, 2025 (example)
-FALLBACK_DATE=""
+# number of concurrent jobs ninja should do (keep build from failing)
+NINJA_JOBS=8
 
 # if these are already enabled or you don't want them, put false
 GRAYSCALE=true   # put true or false

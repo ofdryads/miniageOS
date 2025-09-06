@@ -54,7 +54,9 @@ repo sync --force-sync
 source build/envsetup.sh
 croot || { echo "Build environment could not be set up, exiting..."; exit 1; }
 
-export NINJA_ARGS="-j4" # prevent ninja/soong crashout by limiting jobs
+if [[ "$NINJA_JOBS" =~ ^[0-9]+$ ]]; then
+    export NINJA_ARGS="-j${NINJA_JOBS}" # prevent ninja/soong crashout by limiting jobs
+fi
 
 echo "Running device-specific prep before building..."
 # even for devices where this will fail without proprietary blobs, it needs to run in order to populate lineage/device w/ the manufacturer and device folders
@@ -67,7 +69,7 @@ fi
 
 # take the proprietary things to be included and remove problematic/unwanted ones 
 # DO NOT DO THIS CARELESSLY, brick risk if the wrong things are removed from the file
-if [[ $IS_PIXEL && $TWEAK_BLOBS ]]; then
+if [[ "$IS_PIXEL" && "$TWEAK_BLOBS" ]]; then
     echo "Searching device folder for proprietary-files.txt..."
 
     blobs_txt=$(find "$LINEAGE_ROOT/device/$MANUFACTURER/$CODENAME" -type f -name "proprietary-files.txt" | head -n1)
@@ -129,10 +131,9 @@ if [ ! -f "$local_manif_file" ]; then
   <remove-project name="LineageOS/android_packages_apps_Updater" />
 </manifest>
 EOF
+    echo "Re-syncing repo to apply the dumbphone manifest changes to the source code..."
+    repo sync
 fi
-
-echo "Re-syncing repo to apply the dumbphone manifest changes to the source code..."
-repo sync
 
 #-----THIS SECTION HERE IS WHERE ALL PREBUILD SYSTEM CUSTOMIZATION that diverges from official LOS SHOULD HAPPEN-----#
 
@@ -168,9 +169,16 @@ if [[ "${OLAUNCHER,,}" == "true" ]]; then
     mkdir -p "$LINEAGE_ROOT/packages/apps/Olauncher"
 
     if [ -f "olauncher-latest.apk" ]; then
+        echo "Olauncher APK downloaded successfully, moving it to app folder..."
         mv olauncher-latest.apk "$LINEAGE_ROOT/packages/apps/Olauncher/"
     else
         echo "Failed to download Olauncher APK, it will not be included in the build"
+    fi
+
+    olauncher_in_mk=$(grep "Olauncher" "$LINEAGE_ROOT/Android.mk")
+    if [ -z "$olauncher_in_mk" ]; then
+        echo "    <application module='Olauncher'/>" >> "$LINEAGE_ROOT/Android.mk"
+        echo "Olauncher added to Android.mk"
     fi
 fi
 
