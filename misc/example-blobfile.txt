@@ -1,8 +1,8 @@
 # All blobs are extracted from Google factory images for each new ASB
 
-# note: this is for Pixel 7a, likely applies to other recent-ish pixels
-# have confirmed my phone is fine without the commented blobs (Pixel 7a, non-Verizon carrier)
-# also confirmed the packages are truly not in the system image
+# note: this is for Pixel 7a
+# have confirmed my phone is fine without the commented blobs (Pixel 7a, have non-Verizon carrier)
+# also confirmed the packages are truly not in the system image after flashing
 
 # product partition
 

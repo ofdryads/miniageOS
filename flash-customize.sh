@@ -3,7 +3,6 @@
 script_in_here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$script_in_here/config.sh"
 
-# if not already in this directory, change to the build output directory
 output_folder="$LINEAGE_ROOT/out/target/product/$CODENAME"
 
 echo "Make sure your phone is plugged into the computer, and that USB debugging on this computer has been enabled and authorized (in developer settings)"
@@ -16,7 +15,7 @@ echo ""
 echo "If you do not see any device listed, do NOT press Enter yet. Leave this terminal window open, troubleshoot, then come back and when running 'adb devices' in another terminal window shows your device and says 'device', not 'unauthorized'."
 echo ""
 echo "Press Enter to continue to flash the new system image and recovery:"
-read -r _
+read -r _ < /dev/tty
 
 adb -d reboot bootloader
 
@@ -28,7 +27,7 @@ fastboot reboot recovery
 sleep 7 # before next prompt
 
 echo "In the phone recovery menu (where you should be now - it might take a second), go to 'Apply Update' -> 'Apply from ADB', then hit enter:"
-read -r _
+read -r _ < /dev/tty
 
 # the most recently modified zip file ending in "UNOFFICIAL-{device name}" (OS image zip format)
 dumb_build=$(find "$output_folder" -maxdepth 1 -type f -iname "*UNOFFICIAL-${CODENAME}*.zip" \
@@ -46,7 +45,7 @@ else
 fi
 
 echo "Is the phone rebooted and unlocked now? Hit Enter when it is."
-read -r _
+read -r _ < /dev/tty
 
 # Gray phone
 if [[ "${GRAYSCALE,,}" == "true" ]]; then
@@ -82,7 +81,7 @@ adb install aurora-store-latest.apk
 echo "Update any third party apps you have installed or add any apps you need (e.g. maps, secure messaging, notes, minimalist launcher)"
 echo "Warning: Some apps like Venmo, bank apps, and certain Google apps will not work."
 echo "Hit Enter when you are done installing/updating what you need:"
-read -r _
+read -r _ < /dev/tty
 
 # Clean up downloaded apk from pc
 echo "Deleting the Aurora Store .apk from your computer..."

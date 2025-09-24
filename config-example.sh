@@ -7,18 +7,15 @@ CODENAME=""
 LINEAGE_ROOT="" # the path to the directory where you ran 'repo init' and 'repo sync'
 
 # for MANUFACTURER, usually it's just the manufacturer name in lowercase with no spaces
-# Some known manufacturer names: google, samsung, motorola, oneplus, fairphone, nokia
+# like: google, samsung, motorola, oneplus, etc.
 MANUFACTURER=""
 
-# number of concurrent jobs ninja should do (keep build from failing)
+# number of concurrent jobs ninja should do (to prevent build from failing due to resource exhaustion)
 NINJA_JOBS=8
 
 # if these are already enabled or you don't want them, put false
 GRAYSCALE=true   # put true or false
 NIGHT_MODE=true  # put true or false
-
-# install olauncher?
-OLAUNCHER=true
 
 # Scale the system font/display elements up to make everything bigger?
 BIG_FONT_DISPLAY=true
