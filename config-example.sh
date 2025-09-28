@@ -27,10 +27,7 @@ DISPLAY_MULTIPLIER=1.1 # ultimately results in the font being scaled to 1.65 fro
 # used for extracting proprietary blobs
 OFFICIAL_ZIP=""
 
-# Is the phone a Google Pixel?
-IS_PIXEL=false
-
-# If you have a Pixel, this will install the Google Pixel Camera and disable the LineageOS default camera (Aperture)
+# this will install the Google Pixel Camera and disable the LineageOS default camera (Aperture)
 GOOGLE_PIXEL_CAMERA=false
 # https://www.apkmirror.com/apk/google-inc/camera/ - you probably want arm64-v8a / nodpi / Android 15+ variant
 PIXEL_CAMERA_APK="" # path to apk for google pixel camera app

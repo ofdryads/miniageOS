@@ -19,9 +19,7 @@ read -r _ < /dev/tty
 
 adb -d reboot bootloader
 
-if [[ "${IS_PIXEL,,}" == "true" ]]; then
-  fastboot flash vendor_boot ${output_folder}/vendor_boot.img
-fi
+fastboot flash vendor_boot ${output_folder}/vendor_boot.img
 
 fastboot reboot recovery
 sleep 7 # before next prompt
@@ -91,23 +89,20 @@ echo "Uninstalling the Aurora Store app from your phone..."
 adb shell am force-stop com.aurora.store
 adb uninstall com.aurora.store
 
-if [[ "${IS_PIXEL,,}" == "true" ]]; then
-  echo "Disabling some unnecessary Google programs on the phone..."
-  if adb shell pm list packages | grep -q "com.google.android.as"; then
-    adb shell pm disable-user --user 0 com.google.android.as # Android System Intelligence
-  fi
+echo "Disabling some unnecessary Google programs on the phone..."
+if adb shell pm list packages | grep -q "com.google.android.as"; then
+  adb shell pm disable-user --user 0 com.google.android.as # Android System Intelligence
+fi
 
-  if adb shell pm list packages | grep -q "com.google.android.as.oss"; then
-    adb shell pm disable-user --user 0 com.google.android.as.oss # Private Compute Services
-  fi
+if adb shell pm list packages | grep -q "com.google.android.as.oss"; then
+  adb shell pm disable-user --user 0 com.google.android.as.oss # Private Compute Services
 fi
 
 # disable built-in lineageOS camera - leave it installed on the phone as a backup
 # install Google's Pixel camera app, where path to apk is provided by user in config.sh
 
-#TODO since the APK is user-provided, it is not actually bound to pixel phones
-# make it a "replace default camera" option more generally
-if [[ "${IS_PIXEL,,}" == "true" && "${GOOGLE_PIXEL_CAMERA,,}" == "true" ]]; then
+#TODO since the APK is user-provided, make it a "replace default camera" option more generally
+if [[ "${GOOGLE_PIXEL_CAMERA,,}" == "true" ]]; then
   if [[ -n "$PIXEL_CAMERA_APK" && "$PIXEL_CAMERA_APK" == *.apk ]]; then
     adb shell pm disable-user --user 0 org.lineageos.aperture
     adb install "$PIXEL_CAMERA_APK"

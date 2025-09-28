@@ -55,7 +55,7 @@ source build/envsetup.sh
 croot || { echo "Build environment could not be set up, exiting..."; exit 1; }
 
 if [[ "$NINJA_JOBS" =~ ^[0-9]+$ ]]; then
-    export NINJA_ARGS="-j${NINJA_JOBS}" # prevent ninja/soong crashout by limiting jobs
+    export NINJA_ARGS="-j${NINJA_JOBS}" # prevent ninja/soong crashing by limiting jobs
 fi
 
 echo "Running device-specific prep before building..."
@@ -155,5 +155,3 @@ fi
 
 echo "Building the dumb LineageOS image..."
 brunch "$CODENAME"
-
-cd "$OUT" # go to build output folder when done
