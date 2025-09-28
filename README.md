@@ -32,17 +32,16 @@ Scripts, and resources used by those scripts to do what it does (see "What it do
 - Pulls the most recent LineageOS updates and device-specific vendor updates from their official sources before building, so each build is up to date with the official project
 - Preserves all existing apps, settings, and other user data on phones that already have LineageOS installed
 - After the modified LineageOS image is built and flashed to your phone, it auto-downloads and installs the Aurora Store temporarily from a reputable source (F-droid), waits for you to update or install any apps you need (like secure messaging, notes, and maps), then auto-uninstalls the store when you are done
-- For Pixel phones:
-  - Replaces the default LineageOS camera app with the Google Pixel camera app for higher quality photos without needing GApps/Google Play Services
-  - Disables unnecessary machine learning-based apps that use excessive data and battery power (Android System Intelligence and Private Compute Services)
-  - Option to selectively exclude certain Google/carrier software from the build by preventing their "blobs" from being extracted, such as the "OK Google" listening software and Verizon apps
+- Replaces the default LineageOS camera app with the Google Pixel camera app for higher quality photos without needing GApps/Google Play Services
+- Disables unnecessary machine learning-based apps that use excessive data and battery power (Android System Intelligence and Private Compute Services)
+- Option to selectively exclude certain Google/carrier software from the build by preventing their "blobs" from being extracted, such as the "OK Google" listening software and Verizon apps
 - No need for root access to make any of these changes
 - Drastically increases battery life and reduces data usage just by virtue of the phone doing less and having less on it
 
 ## ⚠️ Disclaimer ⚠️
 
-- As of now, these scripts have only been tested on a Google Pixel 7a. While they are likely compatible with other Pixel models, I cannot guarantee this. For non-Pixel phones, it is **untested** and could have **destructive results**, or simply fail before completing the build due to differences in build processes, file locations, etc.
-- At this point in time, I do _not_ recommend trying to run these scripts for a phone that is not some sort of Google Pixel.
+- As of now, these scripts have only been tested on a Google Pixel 7a. While they are likely compatible with other Pixel models, I cannot guarantee this conclusively until tested. For non-Pixel phones, it is **untested** and could have **destructive results**, or simply fail before completing the build due to differences in build processes, file locations, etc.
+- At this point in time, I do _not_ recommend trying to use this build system for any phone other than a Google Pixel.
 
 ## Prerequisites
 
@@ -91,7 +90,24 @@ chmod +x sync-mod-build.sh flash-customize.sh
 ./flash-customize.sh
 ```
 
-## What things will _not_ work when using a phone running this build?
+## Which modifications need to be re-applied with each build vs. which are one-and-done?
+### Repeated each build:
+- Hosts file additions
+  - Why: repo sync will overwrite. However, *you* do not need to do anything for repeat builds, so long as the HOSTS config variable points to a saved custom hosts file on your computer outside of the LineageOS source code folder
+- Disabling saved settings searches
+  - Why: repo sync will overwrite
+- Blob extraction
+  - Why: Google firmware gets updates occasionally
+- Install -> uninstall Aurora Store to check for app updates (if any 3rd party apps were installed from there)
+  - Why: Vulnerabilities in un-updated apps
+### One-time changes:
+- Camera app replacement (if no new release you want to install)
+- Editing proprietary-files.txt
+- Grayscale/night mode/UI magnifier
+
+**For changes that do not need to be re-applied each build, you can set these variables to "false" in config.sh *after they have been applied through an initial build/flash*, and the scripts will simply skip these steps while preserving the past changes.**
+
+## What will _not_ work when using a phone running this build?
 
 - Banking apps, Venmo, NFC/contactless pay (like Google Pay, Apple Pay, or Samsung Pay)
 - RCS messaging
