@@ -4,8 +4,13 @@ script_in_here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 output_folder="$LINEAGE_ROOT/out/target/product/$CODENAME"
 
 function flash_recovery() {
+
+  if ! command -v adb &> /dev/null; then
+    echo "Error: adb not installed or not found on the computer - you can install adb/fastboot from Google"
+    exit 1
+  fi
+
   echo "Make sure your phone is plugged into the computer, and that USB debugging on this computer has been enabled and authorized (in developer settings)"
-  echo ""
   device_list=$(adb devices)
   echo "$device_list"
 

@@ -9,10 +9,8 @@ confirm_run() {
 	
 	1. You already have LineageOS installed on your phone
 	2. You have gotten up to the 'Preparing the build environment' section
-	3. Have adb and fastboot installed on your computer
-	4. (Optional) Edited the hosts file in the "replace" folder
-	5. Enabled USB debugging and authorized your computer
-	6. Added the correct values to the config.sh file
+	3. (Optional) Edited the hosts file in the "replace" folder
+	4. Added the correct values to the config.sh file
 	
 	Notes:
 	- Keep computer awake - first build may take many hours
@@ -32,12 +30,6 @@ prebuild_checks() {
     fi
 
     source "$script_in_here/config.sh" || exit # load config variables used to differentially execute commands
-
-    # several early checks for issues to exit early
-    if ! command -v adb &> /dev/null; then
-        echo "Error: adb not installed or not found"
-        exit 1
-    fi
 
     if [ ! -d "$LINEAGE_ROOT/.repo" ] || [ ! -d "$LINEAGE_ROOT/packages" ]; then
         echo "Error: directory contents not found - maybe you entered the wrong path to the LineageOS directory, or you have not run the original 'repo init' and 'repo sync' for base LineageOS yet"
