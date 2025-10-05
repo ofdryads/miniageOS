@@ -44,7 +44,7 @@ function flash_build() {
   fi
 }
 
-function visual_changes() {
+function ui_changes() {
   if [[ "${GRAYSCALE,,}" == "true" ]]; then
     echo "Turning your phone gray..."
     adb shell settings put secure accessibility_display_daltonizer_enabled 1
@@ -64,6 +64,13 @@ function visual_changes() {
     BIG_DISPLAY=$(echo "$PHYSICAL_DENSITY * $DISPLAY_MULTIPLIER" | bc | cut -d'.' -f1) # apply multiplier, then truncate to make int
     adb shell wm density "$BIG_DISPLAY"
     echo "Increased display size by ${DISPLAY_MULTIPLIER}"
+  fi
+
+  if [[ "${DISABLE_ANIMATIONS,,}" == "true" ]]; then
+    echo "Disabling animations..."
+    adb shell settings put global window_animation_scale 0
+    adb shell settings put global transition_animation_scale 0
+    adb shell settings put global animator_duration_scale 0
   fi
 }
 
@@ -138,7 +145,7 @@ main() {
   echo "Is the phone rebooted and unlocked now? Hit Enter when it is."
   read -r _ < /dev/tty
   
-  visual_changes
+  ui_changes
   temp_store
   disable_google_services
   replace_camera

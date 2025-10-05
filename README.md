@@ -22,11 +22,12 @@ Scripts, and resources used by those scripts to do what it does (see "What it do
 - A fork of LineageOS (it builds the official, up-to-date LineageOS, with modifications being made at build time)
 
 ## What it does
-
 - Builds the system image without any browser
 - Compiles with a custom hosts file so that your phone will "hard-block" any domains you choose
-- Sets the phone to grayscale and night mode (blue light filter)
-- Applies a magnifier to text and UI elements on the phone to encourage holding it further away and protecting eyesight
+- UI changes:
+  - Sets the phone to grayscale and night mode (blue light filter)
+  - Applies a magnifier to text and UI elements on the phone to encourage holding it further away and protecting eyesight
+  - Disables animations
 - Builds without the user-facing "Updater" so that you will not overwrite changes made to the operating system with OTA updates
 - Does not include any app store or Google Play Services in the system image (like official LineageOS)
 - Pulls the most recent LineageOS updates and device-specific vendor updates from their official sources before building, so each build is up to date with the official project
@@ -93,7 +94,7 @@ chmod +x sync-mod-build.sh flash-customize.sh
 ## Which modifications need to be re-applied with each build vs. which are one-and-done?
 ### Repeated each build:
 - Hosts file additions
-  - Why: repo sync will overwrite. However, *you* do not need to do anything for repeat builds, so long as the HOSTS config variable points to a saved custom hosts file on your computer outside of the LineageOS source code folder
+  - Why: repo sync will overwrite. However, *you* do not need to do anything for repeat builds, so long as the HOSTS config variable points to a saved custom hosts file on your computer that is outside the LineageOS source code folder
 - Disabling saved settings searches
   - Why: repo sync will overwrite
 - Blob extraction
@@ -103,9 +104,9 @@ chmod +x sync-mod-build.sh flash-customize.sh
 ### One-time changes:
 - Camera app replacement (if no new release you want to install)
 - Editing proprietary-files.txt
-- Grayscale/night mode/UI magnifier
+- Grayscale/night mode/animations/UI magnifier
 
-**For changes that do not need to be re-applied each build, you can set these variables to "false" in config.sh *after they have been applied through an initial build/flash*, and the scripts will simply skip these steps while preserving the past changes.**
+**For changes that do not need to be re-applied each build, you can set these variables to "false" in config.sh *after they have been applied through an initial build/flash*, and the scripts will simply skip these steps while preserving their current state**
 
 ## What will _not_ work when using a phone running this build?
 
