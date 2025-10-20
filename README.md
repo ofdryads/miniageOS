@@ -45,8 +45,6 @@ Scripts, and resources used by those scripts to do what it does (see "What it do
 
 - As of now, these scripts have only been tested on a Google Pixel 7a. While they are likely compatible with other Pixel models, I cannot guarantee this conclusively until tested. For non-Pixel phones, it is **untested** and could have **destructive results**, or simply fail before completing the build due to differences in build processes, file locations, etc.
 - At this point in time, I do _not_ recommend trying to use this build system for any phone other than a Google Pixel.
-- As of now, these scripts have only been tested on a Google Pixel 7a. While they are likely compatible with other Pixel models, I cannot guarantee this conclusively until tested. For non-Pixel phones, it is **untested** and could have **destructive results**, or simply fail before completing the build due to differences in build processes, file locations, etc.
-- At this point in time, I do _not_ recommend trying to use this build system for any phone other than a Google Pixel.
 
 ## Prerequisites
 
