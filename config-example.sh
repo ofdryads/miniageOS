@@ -23,6 +23,9 @@ BIG_FONT_DISPLAY=true
 FONT_MULTIPLIER=1.5
 DISPLAY_MULTIPLIER=1.1 # ultimately results in the font being scaled to 1.65 from baseline, since these values stack
 
+# disable transition and other animations in the UI
+DISABLE_ANIMATIONS=true
+
 # path to the downloaded latest official lineageos release from https://download.lineageos.org/devices/{CODENAME}/builds
 # used for extracting proprietary blobs
 OFFICIAL_ZIP=""
