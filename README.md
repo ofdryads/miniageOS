@@ -67,7 +67,7 @@ Scripts, and resources used by those scripts to do what it does (see "What it do
 1. Clone this repo:
 
 ```bash
-git clone https://github.com/ofdryads/miniageOS.git
+git clone https://github.com/ofdryads/miniageos.git
 cd miniageos
 ```
 
