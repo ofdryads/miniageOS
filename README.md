@@ -68,7 +68,7 @@ Scripts, and resources used by those scripts to do what it does (see "What it do
 
 ```bash
 git clone https://github.com/ofdryads/miniageOS.git
-cd miniageOS
+cd miniageos
 ```
 
 2. Configure:
