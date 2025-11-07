@@ -1,0 +1,2 @@
+# to allow SSH into EC2 instance if building there
+MY_LOCAL_IP = ""
