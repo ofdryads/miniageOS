@@ -6,6 +6,7 @@ ARG GIT_USER_NAME="Your Name"
 FROM ubuntu:20.04 
 
 ENV LINEAGE_VERSION="23.0"
+ENV CODENAME="lynx"
 
 # avoid prompts during package installation
 ENV DEBIAN_FRONTEND=noninteractive
@@ -20,6 +21,8 @@ ENV PATH="/home/builder/bin:$PATH"
 ENV USE_CCACHE=1
 ENV CCACHE_EXEC=/usr/bin/ccache
 ENV CCACHE_DIR=/ccache
+
+ENV NINJA_ARGS="-j10"
 
 # /home/builder/android/lineage will be the lineage root directory
 RUN mkdir -p /home/builder/bin && mkdir -p /home/builder/android/lineage
