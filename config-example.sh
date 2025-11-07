@@ -11,7 +11,7 @@ LINEAGE_ROOT="" # the path to the directory where you ran 'repo init' and 'repo 
 MANUFACTURER=""
 
 # number of concurrent jobs ninja should do (to prevent build from failing due to resource exhaustion)
-NINJA_JOBS=8
+NINJA_JOBS=10
 
 # if these are already enabled or you don't want them, put false
 GRAYSCALE=true   # put true or false

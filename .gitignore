@@ -4,3 +4,7 @@ build.log
 config.sh
 
 replace/proprietary-files.txt
+
+TODO.md
+
+*.tfvars
