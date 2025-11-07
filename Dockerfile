@@ -5,13 +5,28 @@ ARG GIT_USER_NAME="Your Name"
 # could be any similar version probably, but build guide is tested with 20.04
 FROM ubuntu:20.04 
 
+ENV LINEAGE_VERSION="23.0"
+
 # avoid prompts during package installation
 ENV DEBIAN_FRONTEND=noninteractive
 
-# set caching variables
+# to avoid running as root:
+RUN useradd -ms /bin/bash builder
+USER builder
+WORKDIR /home/builder
+
+# set env variables
+ENV PATH="/home/builder/bin:$PATH"
 ENV USE_CCACHE=1
 ENV CCACHE_EXEC=/usr/bin/ccache
 ENV CCACHE_DIR=/ccache
+
+# /home/builder/android/lineage will be the lineage root directory
+RUN mkdir -p /home/builder/bin && mkdir -p /home/builder/android/lineage
+
+# Switch to root temporarily for installing dependencies
+USER root
+RUN mkdir -p /ccache && chown -R builder:builder /ccache
 
 # deps from lineageOS build guide for Ubuntu 20.04 and LineageOS 22
 RUN apt-get update && apt-get install -y \
@@ -52,24 +67,22 @@ RUN apt-get update && apt-get install -y \
   libncurses5-dev \
   python-is-python3
 
-# ~/android/lineage will be lineage root
-RUN mkdir -p ~/bin && mkdir -p ~/android/lineage
+USER builder
 
 # Install repo tool
-RUN curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo && chmod a+x ~/bin/repo
-ENV PATH="$HOME/bin:$PATH"
+RUN curl https://storage.googleapis.com/git-repo-downloads/repo > /home/builder/bin/repo && chmod a+x /home/builder/bin/repo
 
 # set up Git + Git Large File Storage
 RUN git config --global user.email "${GIT_USER_EMAIL}" && \
-    git config --global user.name "${GIT_USER_NAME}" && \
-    git lfs install
+  git config --global user.name "${GIT_USER_NAME}" && \
+  git lfs install
 
 # cache for future builds
 RUN ccache -M 50G && ccache -o compression=true
 
-WORKDIR "$HOME/android/lineage"
+WORKDIR "/home/builder/android/lineage"
 
-RUN repo init -u https://github.com/LineageOS/android.git -b lineage-22.2 --git-lfs --no-clone-bundle 
+RUN repo init -u https://github.com/LineageOS/android.git -b lineage-"${LINEAGE_VERSION}" --git-lfs --no-clone-bundle 
 
 RUN repo sync
 
