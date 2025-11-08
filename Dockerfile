@@ -6,7 +6,17 @@ ARG GIT_USER_NAME="Your Name"
 FROM ubuntu:20.04 
 
 ENV LINEAGE_VERSION="23.0"
+ENV LINEAGE_ROOT="/home/builder/android/lineage"
 ENV CODENAME="lynx"
+ENV MANUFACTURER="google"
+ENV DISABLE_SETTINGS_SEARCHES=true
+ENV PATH_TO_ORIGINAL="${LINEAGE_ROOT}/packages/apps/SettingsIntelligence/src/com/android/settings/intelligence/search/savedqueries/SavedQueryRecorder.java"
+
+ENV PATH="/home/builder/bin:$PATH"
+ENV USE_CCACHE=1
+ENV CCACHE_EXEC=/usr/bin/ccache
+ENV CCACHE_DIR=/ccache
+ENV NINJA_ARGS="-j10"
 
 # avoid prompts during package installation
 ENV DEBIAN_FRONTEND=noninteractive
@@ -15,14 +25,6 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN useradd -ms /bin/bash builder
 USER builder
 WORKDIR /home/builder
-
-# set env variables
-ENV PATH="/home/builder/bin:$PATH"
-ENV USE_CCACHE=1
-ENV CCACHE_EXEC=/usr/bin/ccache
-ENV CCACHE_DIR=/ccache
-
-ENV NINJA_ARGS="-j10"
 
 # /home/builder/android/lineage will be the lineage root directory
 RUN mkdir -p /home/builder/bin && mkdir -p /home/builder/android/lineage
@@ -38,6 +40,8 @@ RUN apt-get update && apt-get install -y \
   build-essential \
   ccache \
   curl \
+  wget \
+  nano \
   flex \
   g++-multilib \
   gcc-multilib \
