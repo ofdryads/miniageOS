@@ -21,7 +21,7 @@ ENV DISABLE_SETTINGS_SEARCHES=true
 ENV PATH_TO_ORIGINAL="${LINEAGE_ROOT}/packages/apps/SettingsIntelligence/src/com/android/settings/intelligence/search/savedqueries/SavedQueryRecorder.java"
 
 # create builder user
-RUN useradd -ms /bin/bash builder && mkdir -p /home/builder/bin /ccache && chown -R builder:builder /ccache
+RUN useradd -ms /bin/bash builder && mkdir -p /home/builder/bin /ccache && chown -R builder:builder /home/builder/bin /ccache
 
 # deps from lineageOS build guide for Ubuntu 20.04 and LineageOS 22
 RUN apt-get update && apt-get install -y \
@@ -80,4 +80,7 @@ RUN git config --global user.email "${GIT_USER_EMAIL}" && \
 WORKDIR /home/builder/android/lineage
 
 COPY entrypoint.sh /home/builder/entrypoint.sh
+
+USER root
+
 RUN chmod +x /home/builder/entrypoint.sh
