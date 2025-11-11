@@ -4,6 +4,9 @@ FROM ubuntu:20.04
 ARG GIT_USER_EMAIL=you@example.com
 ARG GIT_USER_NAME="Your Name"
 
+ENV GIT_USER_EMAIL=${GIT_USER_EMAIL}
+ENV GIT_USER_NAME=${GIT_USER_NAME}
+
 ENV DEBIAN_FRONTEND=noninteractive
 # 23.0 is newest
 ENV LINEAGE_VERSION="23.0"
@@ -21,7 +24,7 @@ ENV DISABLE_SETTINGS_SEARCHES=true
 ENV PATH_TO_ORIGINAL="${LINEAGE_ROOT}/packages/apps/SettingsIntelligence/src/com/android/settings/intelligence/search/savedqueries/SavedQueryRecorder.java"
 
 # create builder user
-RUN useradd -ms /bin/bash builder && mkdir -p /home/builder/bin /ccache && chown -R builder:builder /home/builder/bin /ccache
+RUN useradd -ms /bin/bash builder && mkdir -p /home/builder/bin /ccache
 
 # deps from lineageOS build guide for Ubuntu 20.04 and LineageOS 22
 RUN apt-get update && apt-get install -y \
@@ -65,8 +68,6 @@ RUN apt-get update && apt-get install -y \
   python-is-python3 \
   && rm -rf /var/lib/apt/lists/*
 
-USER builder
-
 # Install repo tool
 RUN curl https://storage.googleapis.com/git-repo-downloads/repo > /home/builder/bin/repo && chmod a+x /home/builder/bin/repo
 
@@ -80,7 +81,5 @@ RUN git config --global user.email "${GIT_USER_EMAIL}" && \
 WORKDIR /home/builder/android/lineage
 
 COPY entrypoint.sh /home/builder/entrypoint.sh
-
-USER root
-
 RUN chmod +x /home/builder/entrypoint.sh
+ENTRYPOINT ["/home/builder/entrypoint.sh"]
