@@ -79,5 +79,5 @@ RUN git config --global user.email "${GIT_USER_EMAIL}" && \
 
 WORKDIR /home/builder/android/lineage
 
-COPY docker/entrypoint.sh /home/builder/entrypoint.sh
+COPY entrypoint.sh /home/builder/entrypoint.sh
 RUN chmod +x /home/builder/entrypoint.sh

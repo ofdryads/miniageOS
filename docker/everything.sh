@@ -19,18 +19,13 @@ sudo apt install -y docker-ce docker-ce-cli
 sudo usermod -aG docker "$USER"
 newgrp docker
 
-echo "[+] Cloning miniageOS repository..."
-cd ~ || exit 1
-if [ ! -d "miniageos" ]; then
-    git clone https://github.com/ofdryads/miniageos.git || exit 1
-fi
-cd miniageos || exit 1
+cd ~/miniageos/docker || exit 1
 
-chmod +x docker/build-docker-image.sh
-chmod +x docker/run-docker.sh
+chmod +x build-docker-image.sh
+chmod +x run-docker.sh
 
 echo "[+] Building Docker image..."
-./docker/build-docker-image.sh
+./build-docker-image.sh
 
 echo "[+] Running the Docker container and building the system image ..."
-./docker/run-docker.sh
+./run-docker.sh
