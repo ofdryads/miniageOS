@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # source config variables
-script_in_here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+project_root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 confirm_run() {
     cat <<-'EOF'
@@ -24,12 +24,12 @@ confirm_run() {
 prebuild_checks() {
     exec > >(tee -a build.log) 2>&1 # log progress/errors to this file
 
-    if [ ! -f "$script_in_here/config.sh" ]; then
+    if [ ! -f "$project_root/config.sh" ]; then
         echo "No file named config.sh found in this project's root folder - you may still need to rename or copy config-example.sh to config.sh (after entering the right values)"
         exit 1
     fi
 
-    source "$script_in_here/config.sh" || exit # load config variables used to differentially execute commands
+    source "$project_root/config.sh" || exit # load config variables used to differentially execute commands
 
     if [ ! -d "$LINEAGE_ROOT/.repo" ] || [ ! -d "$LINEAGE_ROOT/packages" ]; then
         echo "Error: directory contents not found - maybe you entered the wrong path to the LineageOS directory, or you have not run the original 'repo init' and 'repo sync' for base LineageOS yet"
@@ -83,8 +83,8 @@ extract_blobs() {
             exit 1
         fi
 
-        if [ -d "$script_in_here/replace" ]; then
-            temp_location="$script_in_here/replace/proprietary-files.txt"
+        if [ -d "$project_root/replace" ]; then
+            temp_location="$project_root/replace/proprietary-files.txt"
             cp "$blobs_txt" "$temp_location"
             echo "Edit and save the file at miniageos/replace/proprietary-files.txt, commenting out or deleting any unnecessary blobs."
             echo "Press Enter when done to continue..."
@@ -96,14 +96,6 @@ extract_blobs() {
     fi
 
     echo "Extracting the latest proprietary blobs for your device from the official LOS build..."
-
-    # remove past blobs for clean slate
-    # check for the folder and contents first then:
-    if [ -d "$LINEAGE_ROOT/vendor/$MANUFACTURER/$CODENAME" ]; then
-        rm -rf "$LINEAGE_ROOT/vendor/$MANUFACTURER/$CODENAME"
-    else
-        echo "Did not find device directory, skipping delete"
-    fi
 
     # find the extract script (could be .py or .sh)
     extract_script=$(find "$LINEAGE_ROOT/device/$MANUFACTURER/$CODENAME" -type f -name "extract-files*" | head -n1)
@@ -157,7 +149,7 @@ custom_hosts() {
 no_saved_settings_searches() {
     # Disables saving past searches in settings
     if [[ "${DISABLE_SETTINGS_SEARCHES,,}" == "true" ]] && [ -f "$PATH_TO_ORIGINAL" ]; then
-        cp "$script_in_here/replace/NoSavedSettingsSearches.java" "$PATH_TO_ORIGINAL"
+        cp "$project_root/replace/NoSavedSettingsSearches.java" "$PATH_TO_ORIGINAL"
         echo "Disabled saving past searches in settings"
     fi
 }
