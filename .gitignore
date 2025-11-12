@@ -10,3 +10,4 @@ TODO.md
 *.tfvars
 
 lineage_src/*
+ccache
