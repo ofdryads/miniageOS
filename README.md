@@ -22,6 +22,7 @@ Scripts, and resources used by those scripts to do what it does (see "What it do
 - A fork of LineageOS (it builds the official, up-to-date LineageOS, with modifications being made at build time)
 
 ## What it does
+
 - Builds the system image without any browser
 - Compiles with a custom hosts file so that your phone will "hard-block" any domains you choose
 - UI changes:
@@ -92,21 +93,25 @@ chmod +x sync-mod-build.sh flash-customize.sh
 ```
 
 ## Which modifications need to be re-applied with each build vs. which are one-and-done?
+
 ### Repeated each build:
+
 - Hosts file additions
-  - Why: repo sync will overwrite. However, *you* do not need to do anything for repeat builds, so long as the HOSTS config variable points to a saved custom hosts file on your computer that is outside the LineageOS source code folder
+  - Why: repo sync will overwrite. However, _you_ do not need to do anything for repeat builds, so long as the HOSTS config variable points to a saved custom hosts file on your computer that is outside the LineageOS source code folder
 - Disabling saved settings searches
   - Why: repo sync will overwrite
 - Blob extraction
   - Why: Google firmware gets updates occasionally
 - Install -> uninstall Aurora Store to check for app updates (if any 3rd party apps were installed from there)
   - Why: Vulnerabilities in un-updated apps
+
 ### One-time changes:
+
 - Camera app replacement (if no new release you want to install)
 - Editing proprietary-files.txt
 - Grayscale/night mode/animations/UI magnifier
 
-**For changes that do not need to be re-applied each build, you can set these variables to "false" in config.sh *after they have been applied through an initial build/flash*, and the scripts will simply skip these steps while preserving their current state**
+**For changes that do not need to be re-applied each build, you can set these variables to "false" in config.sh _after they have been applied through an initial build/flash_, and the scripts will simply skip these steps while preserving their current state**
 
 ## What will _not_ work when using a phone running this build?
 
@@ -115,7 +120,7 @@ chmod +x sync-mod-build.sh flash-customize.sh
   - However, regular SMS, most messaging apps (Signal, WhatApp), and iMessage-via-Mac services (BlueBubbles) _will_ work just fine
 - _(The points above apply to any phone with an unlocked bootloader, including ones running official LineageOS builds)_
 - Opening links (URL or QR code) in a browser will not work, since there is no browser to open the links.
-- If using a third party messaging app, I *highly* recommend installing MicroG to be able to get push notifications. You can get the literal messages without it but not the notifications.
+- If using a third party messaging app, I _highly_ recommend installing MicroG to be able to get push notifications. You can get the literal messages without it but not the notifications.
 
 ## Important note
 

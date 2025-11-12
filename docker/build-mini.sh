@@ -15,6 +15,11 @@ prebuild_checks() {
         echo "Error: LineageOS source not found"
         exit 1
     fi
+
+    if [[ -n ${CODENAME} ]] || [[ -n ${MANUFACTURER} ]]; then
+        echo "Device variables (name and vendor) not defined in Dockerfile"
+        exit 1
+    fi
 }
 
 build_setup() {
@@ -35,7 +40,7 @@ device_prep() {
     fi
 }
 
-# use the lineageOS api to pull the latest offixial nightly zip for a device
+# use the lineageOS api to pull the latest official nightly zip for a device
 pull_latest_lineage() {
     curl -s "https://download.lineageos.org/api/v2/devices/${CODENAME}/builds" \
         | python3 -c "import sys, json; data=json.load(sys.stdin); print([f['url'] for b in data for f in b.get('files', []) if 'signed.zip' in f.get('filename', '')][0])" \
@@ -43,13 +48,17 @@ pull_latest_lineage() {
     echo "$(pwd)/lineage-${CODENAME}-latest.zip"
 }
 
+# TODO check for proprietary-files.txt in replace/proprietary-files.txt, copy to 
+# "$LINEAGE_ROOT/device/$MANUFACTURER/$CODENAME" only if the file is in replace/proprietary-files.txt
+
 extract_blobs() {
     echo "Extracting the latest proprietary blobs for your device from the official LOS build..."
 
     # find the extract script (could be .py or .sh)
     extract_script=$(find "$LINEAGE_ROOT/device/$MANUFACTURER/$CODENAME" -type f -name "extract-files*" | head -n1)
 
-    if [ -x "$extract_script" ]; then
+    if [ -f "$extract_script" ]; then
+        chmod a+x "$extract_script"
         echo "Extracting proprietary blobs..."
         ./"$extract_script" "$OFFICIAL_ZIP"
     else
