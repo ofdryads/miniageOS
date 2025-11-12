@@ -8,3 +8,5 @@ replace/proprietary-files.txt
 TODO.md
 
 *.tfvars
+
+lineage_src/*
